@@ -99,7 +99,7 @@
         "format": "{status_icon} {dynamic}",
         "format-stopped": "Nothing playing!",
         "status-icons": {
-            //"playing": "♫",
+            "playing": "♫",
             "paused": "⏸"
         },
         "dynamic-order": [
