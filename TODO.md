@@ -1,4 +1,3 @@
-- clean up repo, go through everything
 - ssh key declarative with sops-nix
 - try to have nvim hotreload files and have the neotree be more active to changes
 - migrate to quickshell IF it has a better music visualizer
