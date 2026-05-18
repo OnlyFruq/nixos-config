@@ -17,6 +17,11 @@
 
       programs.zsh.enable = true;
 
+      programs.localsend = {
+        enable = true;
+	openFirewall = true;
+      };
+
       home-manager.users.sean = {
         imports = [
           inputs.self.modules.homeManager.sean
@@ -40,6 +45,7 @@
         printing
         rdp-work
         shell
+        sops
         ssh
         vesktop
       ];
