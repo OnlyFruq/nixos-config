@@ -89,7 +89,61 @@ Feature modules can declare their own flake inputs using `flake-file.inputs`:
 
 After adding a `flake-file.inputs` declaration, **you must run `nix run .#write-flake`** to regenerate `flake.nix` before the new input is available in evaluation.
 
-## nixvim (Neovim)
+## SOPS secrets
+
+SSH private key and other secrets managed via **sops-nix** (HM module, `modules/features/sops.nix`).
+
+### Architecture
+
+- **Age key** lives at `~/.ssh/sops_age_key` (preserved via impermanence as a single file). Only this one file persists — sops provisions everything else.
+- **Encrypted secrets** are in `modules/secrets/secrets.yaml`, committed to git with `sops` metadata.
+- Decryption uses the age key on-disk at activation time. No machine/host keys involved.
+
+### Adding a new secret
+
+1. In `modules/features/sops.nix`, add an entry to `sops.secrets`:
+   ```nix
+   sops.secrets."my_secret_name" = {
+     path = "${config.home.homeDirectory}/some/path";
+     mode = "0600";
+   };
+   ```
+2. Edit the encrypted file to add the key-value pair:
+   ```bash
+   sops modules/secrets/secrets.yaml
+   ```
+3. Rebuild.
+
+### Updating a secret
+
+```bash
+sops modules/secrets/secrets.yaml
+```
+Edit the value, save — sops re-encrypts automatically. Rebuild to deploy.
+
+### Rotating the age key
+
+If the age key is lost (e.g. fresh install), generate a new one:
+```bash
+nix shell nixpkgs#age -c age-keygen -o ~/.ssh/sops_age_key
+```
+Get the public key, update `.sops.yaml`, then re-encrypt `secrets.yaml`:
+```bash
+sops --rotate --age $(nix shell nixpkgs#age -c age-keygen -y ~/.ssh/sops_age_key) \
+  modules/secrets/secrets.yaml
+```
+Commit, rebuild.
+
+### Fresh install bootstrap
+
+```bash
+# Restore ~/.ssh/sops_age_key from backup, OR:
+age-keygen -o ~/.ssh/sops_age_key &&              # generate new key
+  age-keygen -y ~/.ssh/sops_age_key               # get public key → update .sops.yaml
+
+# Re-encrypt secrets against the new key if needed, then:
+sudo nixos-rebuild switch --flake .#notebook
+```
 
 Neovim is configured via **[nixvim](https://nix-community.github.io/nixvim)** (github:nix-community/nixvim), a fully declarative Neovim module system. The config lives in `modules/features/nixvim.nix`.
 
@@ -141,7 +195,7 @@ Disk (NVMe by-id)
 | File | Purpose |
 |------|---------|
 | `modules/features/disko.nix` | GPT + LUKS + nested GPT (swap + BTRFS subvols) + tmpfs root; parameterized `diskoConfigDevice` option |
-| `modules/features/impermanence.nix` | Preservation config: /etc/NetworkManager/system-connections, /var/lib/bluetooth, /var/lib/systemd/timers, machine-id, SSH host keys, user ~/.ssh, ~/persist, wireplumber |
+| `modules/features/impermanence.nix` | Preservation config: /etc/NetworkManager/system-connections, /var/lib/bluetooth, /var/lib/systemd/timers, machine-id, SSH host keys, user ~/.ssh/sops_age_key, ~/persist, wireplumber |
 | `modules/hosts/notebook.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + impermanence |
 
 ### Fresh Install (disko-install)
