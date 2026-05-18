@@ -14,8 +14,6 @@
 
       options.diskoConfigDevice = lib.mkOption {
         type = lib.types.str;
-        default = "/dev/sda";
-        description = "Root disk device, prefer /dev/disk/by-id/";
       };
 
       config = {
@@ -38,13 +36,6 @@
                     mountOptions = [ "umask=0077" ];
                   };
                 };
-                swap = {
-                  size = "28G";
-                  content = {
-                    type = "swap";
-                    resumeDevice = true;
-                  };
-                };
                 luks = {
                   size = "100%";
                   content = {
@@ -52,22 +43,37 @@
                     name = "cryptroot";
                     settings.allowDiscards = true;
                     content = {
-                      type = "btrfs";
-                      extraArgs = [ "-f" ];
-                      subvolumes = {
-                        "/nix" = {
-                          mountpoint = "/nix";
-                          mountOptions = [
-                            "compress=zstd"
-                            "noatime"
-                          ];
+                      type = "gpt";
+                      partitions = {
+                        swap = {
+                          size = "24G";
+                          content = {
+                            type = "swap";
+                            resumeDevice = true;
+                          };
                         };
-                        "/persist" = {
-                          mountpoint = "/persist";
-                          mountOptions = [
-                            "compress=zstd"
-                            "noatime"
-                          ];
+                        root = {
+                          size = "100%";
+                          content = {
+                            type = "btrfs";
+                            extraArgs = [ "-f" ];
+                            subvolumes = {
+                              "/nix" = {
+                                mountpoint = "/nix";
+                                mountOptions = [
+                                  "compress=zstd"
+                                  "noatime"
+                                ];
+                              };
+                              "/persist" = {
+                                mountpoint = "/persist";
+                                mountOptions = [
+                                  "compress=zstd"
+                                  "noatime"
+                                ];
+                              };
+                            };
+                          };
                         };
                       };
                     };
@@ -79,7 +85,7 @@
           nodev."/" = {
             fsType = "tmpfs";
             mountOptions = [
-              "size=8G"
+              "size=4G"
               "mode=755"
             ];
           };

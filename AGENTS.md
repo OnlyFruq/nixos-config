@@ -123,11 +123,13 @@ This system uses **impermanent root** (tmpfs) with persistent state on a LUKS-en
 
 ```
 Disk (NVMe by-id)
-├─ ESP (vfat, 512M, /boot)
+├─ ESP (vfat, 1G, /boot)
 └─ LUKS (cryptroot, 100%)
-   └─ BTRFS
-      ├─ @nix (/nix)     ← compress=zstd, noatime
-      └─ @persist (/persist) ← compress=zstd, noatime
+   └─ GPT (nested)
+      ├─ swap (24G)      ← encrypted hibernation
+      └─ BTRFS (remaining)
+         ├─ @nix (/nix)     ← compress=zstd, noatime
+         └─ @persist (/persist) ← compress=zstd, noatime
 ```
 
 - **`/`** → tmpfs (`size=8G`), everything ephemeral
@@ -138,7 +140,7 @@ Disk (NVMe by-id)
 
 | File | Purpose |
 |------|---------|
-| `modules/features/disko.nix` | GPT + LUKS + BTRFS subvols + tmpfs root; parameterized `diskoConfigDevice` option |
+| `modules/features/disko.nix` | GPT + LUKS + nested GPT (swap + BTRFS subvols) + tmpfs root; parameterized `diskoConfigDevice` option |
 | `modules/features/impermanence.nix` | Preservation config: /var/lib/fwupd, /var/lib/bluetooth, SSH keys, machine-id, NM connections, /var/log, user ~/.ssh, ~/persist, wireplumber |
 | `modules/hosts/notebook.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + impermanence |
 
