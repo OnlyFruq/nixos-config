@@ -1,3 +1,5 @@
+- add 24GB swap somehow withouth breaking boot
+- fix hardcoded path in waybar config
 - try to have nvim hotreload files and have the neotree be more active to changes
 - migrate to quickshell IF it has a better music visualizer
 - vm config
