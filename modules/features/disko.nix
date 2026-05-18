@@ -36,44 +36,33 @@
                     mountOptions = [ "umask=0077" ];
                   };
                 };
+
                 luks = {
                   size = "100%";
                   content = {
                     type = "luks";
                     name = "cryptroot";
                     settings.allowDiscards = true;
+
                     content = {
-                      type = "gpt";
-                      partitions = {
-                        swap = {
-                          size = "24G";
-                          content = {
-                            type = "swap";
-                            resumeDevice = true;
-                          };
+                      type = "btrfs";
+                      extraArgs = [ "-f" ];
+
+                      subvolumes = {
+                        "/nix" = {
+                          mountpoint = "/nix";
+                          mountOptions = [
+                            "compress=zstd"
+                            "noatime"
+                          ];
                         };
-                        root = {
-                          size = "100%";
-                          content = {
-                            type = "btrfs";
-                            extraArgs = [ "-f" ];
-                            subvolumes = {
-                              "/nix" = {
-                                mountpoint = "/nix";
-                                mountOptions = [
-                                  "compress=zstd"
-                                  "noatime"
-                                ];
-                              };
-                              "/persist" = {
-                                mountpoint = "/persist";
-                                mountOptions = [
-                                  "compress=zstd"
-                                  "noatime"
-                                ];
-                              };
-                            };
-                          };
+
+                        "/persist" = {
+                          mountpoint = "/persist";
+                          mountOptions = [
+                            "compress=zstd"
+                            "noatime"
+                          ];
                         };
                       };
                     };
@@ -82,6 +71,7 @@
               };
             };
           };
+
           nodev."/" = {
             fsType = "tmpfs";
             mountOptions = [
