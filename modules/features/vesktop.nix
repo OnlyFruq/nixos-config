@@ -6,7 +6,6 @@
       settings = {
         discordBranch = "stable";
         tray = false;
-        arRPC = true;
         firstLaunch = false;
         checkUpdates = false;
         hardwareAcceleration = true;
