@@ -29,7 +29,6 @@
     };
   };
 
-  flake.nixosConfigurations = 
-    inputs.self.lib.mkNixos "x86_64-linux" "notebook" //
-    inputs.self.lib.mkNixos "x86_64-linux" "vm";
+  flake.nixosConfigurations =
+    inputs.self.lib.mkNixos "x86_64-linux" "notebook" // inputs.self.lib.mkNixos "x86_64-linux" "vm";
 }
