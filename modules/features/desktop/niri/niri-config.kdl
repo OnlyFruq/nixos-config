@@ -80,8 +80,7 @@ layout {
 }
 
 spawn-at-startup "waybar"
-spawn-at-startup "awww-daemon"
-spawn-sh-at-startup "awww img ~/.local/share/wallpapers/yuta_green.jpg"
+spawn-sh-at-startup "awww-daemon & until awww query &>/dev/null; do sleep 0.1; done && awww img ~/.local/share/wallpapers/yuta_green.jpg"
 
 hotkey-overlay {
     skip-at-startup
