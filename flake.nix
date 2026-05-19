@@ -20,6 +20,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     import-tree.url = "github:vic/import-tree";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
     nix-firefox-addons = {
       url = "github:OsiPog/nix-firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
