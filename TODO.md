@@ -5,4 +5,5 @@
 - vm config
 - password manager, maybe synced via selfhost? keypassXC or a real self hosted password manager
 - make neovim more beautful, start with installing fonts for proper symbols
+- tpm based luks decryption
 - server config with declarative podman containers
