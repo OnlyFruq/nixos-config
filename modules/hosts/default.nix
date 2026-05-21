@@ -1,8 +1,9 @@
 { ... }:
 {
-  flake.modules.nixos.systemDefault =
-    { ... }:
+  flake.modules.nixos.default =
+    { pkgs, config, ... }:
     {
+      # --- System Defaults ---
       time.timeZone = "Europe/Berlin";
       i18n.defaultLocale = "en_US.UTF-8";
       i18n.extraLocaleSettings = {
@@ -55,5 +56,40 @@
 
       system.stateVersion = "25.11";
       nixpkgs.hostPlatform = "x86_64-linux";
+
+      # --- System Essential ---
+      networking = {
+        networkmanager.enable = true;
+        firewall.enable = true;
+      };
+
+      boot.loader = {
+        timeout = 1;
+        efi.canTouchEfiVariables = true;
+        systemd-boot.enable = true;
+        systemd-boot.configurationLimit = 10;
+      };
+
+      fonts.packages = with pkgs; [
+        nerd-fonts.jetbrains-mono
+      ];
+
+      environment.systemPackages = with pkgs; [
+        lm_sensors
+        pciutils
+        usbutils
+        iotop
+        wget
+        tldr
+        bat
+        zsh
+      ];
+
+      environment.shellAliases = {
+        rbs = "sudo nixos-rebuild switch --flake .#${config.networking.hostName}";
+        rbb = "sudo nixos-rebuild boot --flake .#${config.networking.hostName} && reboot";
+      };
+
+      users.mutableUsers = false;
     };
 }
