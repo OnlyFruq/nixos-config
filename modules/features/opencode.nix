@@ -12,14 +12,17 @@
           lsp = true;
           mcp = {
             nixos = {
-              command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
+              command = [ "${pkgs.mcp-nixos}/bin/mcp-nixos" ];
               enabled = true;
               type = "local";
             };
             python = {
-              command = "${pkgs.uv}/bin/uvx --isolated pypi-mcp";
+              command = [ "${pkgs.uv}/bin/uvx" "mcp-server-analyzer" ];
               enabled = true;
               type = "local";
+              environment = {
+                UV_PYTHON = "${pkgs.python3}/bin/python3";
+              };
             };
           };
         };
@@ -31,6 +34,7 @@
       home.packages = with pkgs; [
         nixd
         pyright
+        ruff
         uv
       ];
     };
