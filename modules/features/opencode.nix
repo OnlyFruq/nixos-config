@@ -1,19 +1,37 @@
-{ ... }:
-{
-  flake.modules.homeManager.opencode = {
-    home.shellAliases = {
-      c = "opencode";
-    };
+{ inputs, ... }: {
+  flake.modules.homeManager.opencode =
+    { pkgs, ... }: {
+      home.shellAliases = {
+        c = "opencode";
+      };
 
-    programs.opencode = {
-      enable = true;
-      enableMcpIntegration = true;
-      settings = {
-        autoupdate = false;
+      programs.opencode = {
+        enable = true;
+        settings = {
+          autoupdate = false;
+          lsp = true;
+          mcp = {
+            nixos = {
+              command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
+              enabled = true;
+              type = "local";
+            };
+            python = {
+              command = "${pkgs.uv}/bin/uvx --isolated pypi-mcp";
+              enabled = true;
+              type = "local";
+            };
+          };
+        };
+        tui = {
+          theme = "system";
+        };
       };
-      tui = {
-        theme = "system";
-      };
+
+      home.packages = with pkgs; [
+        nixd
+        pyright
+        uv
+      ];
     };
-  };
 }

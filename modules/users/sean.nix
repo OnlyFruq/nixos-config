@@ -38,7 +38,6 @@
         firefox
         git
         libreoffice
-        mcp
         niri
         nixvim
         opencode
