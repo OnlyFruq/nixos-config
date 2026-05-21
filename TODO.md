@@ -7,3 +7,5 @@
 - use firefox containers for different profiles on the same pages
 - server config with declarative podman containers
 - configure python mcp for opencode
+- ff alias to launch fastfetch; make a fastfetch module with a custom config
+- cl command to clear screen probably in user config sean.nix
