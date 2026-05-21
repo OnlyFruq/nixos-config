@@ -2,7 +2,6 @@
   flake.modules.nixos.sean =
     { ... }: {
       imports = with inputs.self.modules.nixos; [
-        userDefault
         localsend
       ];
 
