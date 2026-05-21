@@ -1,12 +1,15 @@
-{ ... }: {
+{ ... }:
+{
   flake.modules.nixos.niri =
-    { ... }: {
+    { ... }:
+    {
 
       programs.niri.enable = true;
     };
 
   flake.modules.homeManager.niri =
-    { pkgs, config, ... }: {
+    { pkgs, config, ... }:
+    {
       xdg.configFile."niri/config.kdl" = {
         source = ./niri-config.kdl;
         force = true;

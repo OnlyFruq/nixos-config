@@ -1,4 +1,5 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   flake-file.inputs = {
     nix-firefox-addons = {
       url = "github:OsiPog/nix-firefox-addons";
@@ -7,7 +8,13 @@
   };
 
   flake.modules.homeManager.firefox =
-    { pkgs, config, lib, ... }: {
+    {
+      pkgs,
+      config,
+      lib,
+      ...
+    }:
+    {
       home.packages = with pkgs; [
         hunspellDicts.en_US
         hunspellDicts.de_DE

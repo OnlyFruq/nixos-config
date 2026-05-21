@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   flake.modules.nixos.rdp-work = {
     networking.networkmanager.ensureProfiles.profiles = {
       "rdp-static-eth" = {
@@ -20,7 +21,8 @@
   };
 
   flake.modules.homeManager.rdp-work =
-    { pkgs, ... }: {
+    { pkgs, ... }:
+    {
       home.packages = [ pkgs.freerdp ];
 
       xdg.desktopEntries.rdp-to-work = {

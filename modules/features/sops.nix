@@ -1,4 +1,5 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   flake-file.inputs = {
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -7,7 +8,8 @@
   };
 
   flake.modules.homeManager.sops =
-    { config, ... }: {
+    { config, ... }:
+    {
       imports = [ inputs.sops-nix.homeManagerModules.sops ];
 
       sops = {

@@ -1,6 +1,8 @@
-{ ... }: {
+{ ... }:
+{
   flake.modules.homeManager.mcp =
-    { pkgs, ... }: {
+    { pkgs, ... }:
+    {
       programs.mcp = {
         enable = true;
         servers = {

@@ -1,6 +1,8 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   flake.modules.nixos.notebook =
-    { ... }: {
+    { ... }:
+    {
       imports = with inputs.self.modules.nixos; [
         hostDefault
         disko

@@ -1,11 +1,13 @@
-{ ... }: {
+{ ... }:
+{
   flake-file.inputs.nixvim = {
     url = "github:nix-community/nixvim";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
   flake.modules.homeManager.nixvim =
-    { ... }: {
+    { ... }:
+    {
       home.shellAliases.n = "nvim";
       home.sessionVariables.EDITOR = "nvim";
 
@@ -71,7 +73,10 @@
               };
               formatters_by_ft = {
                 nix = [ "nixpkgs_fmt" ];
-                python = [ "isort" "black" ];
+                python = [
+                  "isort"
+                  "black"
+                ];
               };
             };
           };
