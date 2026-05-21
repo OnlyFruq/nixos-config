@@ -8,11 +8,10 @@
   };
 
   flake.modules.homeManager.firefox =
-    {
-      pkgs,
-      config,
-      lib,
-      ...
+    { pkgs
+    , config
+    , lib
+    , ...
     }:
     {
       home.packages = with pkgs; [
@@ -64,6 +63,8 @@
             "browser.aboutwelcome.didSeeFinalScreen" = true;
             "trailhead.firstrun.didSeeAboutWelcome" = true;
             "doh-rollout.doneFirstRun" = true;
+            "browser.download.dir" = "/home/${config.home.username}/";
+            "browser.download.useDownloadDir" = false;
             "browser.bookmarks.addedImportButton" = false;
             "browser.shell.checkDefaultBrowser" = false;
             "browser.toolbars.bookmarks.visibility" = "always";
