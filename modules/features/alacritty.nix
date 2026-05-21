@@ -9,7 +9,7 @@
           normal = {
             family = "JetBrainsMono Nerd Font";
           };
-          size = 9;
+          size = 10;
         };
         scrolling.multiplier = 5;
         selection.save_to_clipboard = true;
