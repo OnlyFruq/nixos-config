@@ -1,4 +1,4 @@
-{ inputs, ... }: {
+{ ... }: {
   flake.modules.homeManager.opencode =
     { pkgs, ... }: {
       home.shellAliases = {
@@ -15,14 +15,6 @@
               command = [ "${pkgs.mcp-nixos}/bin/mcp-nixos" ];
               enabled = true;
               type = "local";
-            };
-            python = {
-              command = [ "${pkgs.uv}/bin/uvx" "mcp-server-analyzer" ];
-              enabled = true;
-              type = "local";
-              environment = {
-                UV_PYTHON = "${pkgs.python3}/bin/python3";
-              };
             };
           };
         };
