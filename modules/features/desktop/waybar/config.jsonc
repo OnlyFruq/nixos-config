@@ -82,7 +82,7 @@
         "format-ethernet": "eth",
         "tooltip-format": "{ifname}",
         "format-disconnected": "<s>net</s>",
-	"on-click": "alacritty --class nmtui -e nmtui"
+	"on-click": "alacritty --class netpala -e netpala"
     },
     "pulseaudio#sink": {
         "format": "vol {volume}%",
