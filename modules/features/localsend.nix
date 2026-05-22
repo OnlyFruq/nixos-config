@@ -3,9 +3,13 @@
   flake.modules.nixos.localsend =
     { ... }:
     {
-      programs.localsend = {
-        enable = true;
-        openFirewall = true;
-      };
+      networking.firewall.allowedTCPPorts = [ 53317 ];
+      networking.firewall.allowedUDPPorts = [ 53317 ];
+    };
+
+  flake.modules.homeManager.localsend =
+    { pkgs, ... }:
+    {
+      home.packages = [ pkgs.localsend ];
     };
 }

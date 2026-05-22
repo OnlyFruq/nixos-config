@@ -3,10 +3,6 @@
   flake.modules.nixos.sean =
     { pkgs, ... }:
     {
-      imports = with inputs.self.modules.nixos; [
-        localsend
-      ];
-
       users.users.sean = {
         isNormalUser = true;
         description = "Sean Tietz";
@@ -38,6 +34,7 @@
         btop
         firefox
         git
+        localsend
         libreoffice
         niri
         nixvim
