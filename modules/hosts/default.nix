@@ -1,21 +1,17 @@
 { ... }:
 {
   flake.modules.nixos.hostDefault =
-    {
-      pkgs,
-      config,
-      lib,
-      ...
+    { pkgs
+    , config
+    , lib
+    , ...
     }:
-    let
-      cfg = config.hostCfg.audio;
-    in
     {
       options.hostCfg.audio.enable = lib.mkEnableOption "Audio Support";
       options.hostCfg.hm.enable = lib.mkEnableOption "Home-Manager Default";
 
       config = lib.mkMerge [
-        (lib.mkIf cfg.enable {
+        (lib.mkIf config.hostCfg.audio.enable {
           security.rtkit.enable = true;
           hardware.alsa.enableBluetooth = true;
           services.pipewire = {
@@ -31,6 +27,7 @@
             useUserPackages = true;
           };
         })
+
         {
           time.timeZone = "Europe/Berlin";
           i18n.defaultLocale = "en_US.UTF-8";
