@@ -1,4 +1,3 @@
-- migrate to quickshell IF it has a better music visualizer
 - vm config
 - password manager, maybe synced via selfhost? keypassXC or a real self hosted password manager
 - use firefox containers for different profiles on the same pages
