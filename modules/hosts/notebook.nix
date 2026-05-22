@@ -29,20 +29,6 @@
         bluetooth.enable = true;
       };
 
-      fileSystems."/mnt/ssd" = {
-        device = "/dev/disk/by-uuid/A6FC-984F";
-        fsType = "exfat";
-        options = [
-          "x-systemd.device-timeout=5"
-          "x-systemd.automount"
-          "noatime"
-          "nofail"
-          "umask=0022"
-          "uid=1000"
-          "gid=100"
-        ];
-      };
-
       boot.initrd.availableKernelModules = [
         "ahci"
         "xhci_pci"
