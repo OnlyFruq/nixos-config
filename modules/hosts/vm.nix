@@ -11,12 +11,12 @@
         sean
       ];
 
-      diskoConfigDevice = "/dev/disk/by-id/virtio-ROOT";
-
       hostCfg = {
         audio.enable = true;
         hm.enable = true;
       };
+
+      diskoConfigDevice = "/dev/disk/by-id/virtio-ROOT";
 
       networking.hostName = "vm";
 
