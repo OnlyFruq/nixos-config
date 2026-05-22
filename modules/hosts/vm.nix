@@ -13,6 +13,11 @@
 
       diskoConfigDevice = "/dev/disk/by-id/virtio-ROOT";
 
+      hostCfg = {
+        audio.enable = true;
+        hm.enable = true;
+      };
+
       networking.hostName = "vm";
 
       boot.initrd.availableKernelModules = [
@@ -31,9 +36,5 @@
       boot.kernelModules = [
         "kvm-intel"
       ];
-
-      hostCfg.audio.enable = true;
-
-      hostCfg.hm.enable = true;
     };
 }
