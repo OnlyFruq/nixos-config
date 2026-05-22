@@ -20,6 +20,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     import-tree.url = "github:vic/import-tree";
+    netpala = {
+      url = "github:joel-sgc/netpala";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-firefox-addons = {
       url = "github:OsiPog/nix-firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
