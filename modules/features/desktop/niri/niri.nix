@@ -100,7 +100,6 @@
       };
 
       home.packages = with pkgs; [
-        xwayland-satellite
         awww
         font-awesome
         wiremix
