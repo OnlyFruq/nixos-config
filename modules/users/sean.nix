@@ -1,6 +1,8 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   flake.modules.nixos.sean =
-    { pkgs, ... }: {
+    { pkgs, ... }:
+    {
       imports = with inputs.self.modules.nixos; [
         localsend
       ];
@@ -30,7 +32,8 @@
     };
 
   flake.modules.homeManager.sean =
-    { pkgs, config, ... }: {
+    { pkgs, config, ... }:
+    {
       imports = with inputs.self.modules.homeManager; [
         userDefault
         alacritty
