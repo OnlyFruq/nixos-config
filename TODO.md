@@ -1,9 +1,6 @@
 - vm config
+- make localsend not a system nixos module but instead make HM install localsend and make it open firewall ports, check if that is even possible via user based options
 - password manager, maybe synced via selfhost? keypassXC or a real self hosted password manager
 - use firefox containers for different profiles on the same pages
 - server config with declarative podman containers
 - configure python mcp for opencode
-- ff alias to launch fastfetch; make a fastfetch module with a custom config
-- cl command to clear screen probably in user config sean.nix
-- fix vesktop, options seem to have no effect, figure out why
-- declarative wifi passwords, maybe put bluetooth connections into the repo or if sensible also make it declarative
