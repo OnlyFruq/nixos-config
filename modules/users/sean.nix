@@ -141,7 +141,6 @@
       };
 
       home.packages = with pkgs; [
-        spotify
         nixfmt-tree
         nixfmt
         dnsutils

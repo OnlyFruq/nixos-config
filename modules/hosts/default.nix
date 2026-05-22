@@ -54,8 +54,6 @@
           console.keyMap = "de-latin1";
           services.xserver.xkb.layout = "de";
 
-          nixpkgs.config.allowUnfree = true;
-
           nix = {
             settings = {
               auto-optimise-store = true;
