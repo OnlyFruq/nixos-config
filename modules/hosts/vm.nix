@@ -15,11 +15,6 @@
 
       networking.hostName = "vm";
 
-      hardware = {
-        enableRedistributableFirmware = true;
-        cpu.intel.updateMicrocode = true;
-      };
-
       boot.initrd.availableKernelModules = [
         "ahci"
         "xhci_pci"
