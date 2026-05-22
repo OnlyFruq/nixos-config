@@ -1,17 +1,18 @@
 { ... }:
 {
   flake.modules.nixos.hostDefault =
-    { pkgs
-    , config
-    , lib
-    , ...
+    {
+      pkgs,
+      config,
+      lib,
+      ...
     }:
     let
       cfg = config.hostCfg.audio;
     in
     {
       options.hostCfg.audio.enable = lib.mkEnableOption "Audio Support";
-      options.hostCfg.hm.enable = lib.mkEnableOption "home-manager global config (useGlobalPkgs + useUserPackages)";
+      options.hostCfg.hm.enable = lib.mkEnableOption "Home-Manager Default";
 
       config = lib.mkMerge [
         (lib.mkIf cfg.enable {
