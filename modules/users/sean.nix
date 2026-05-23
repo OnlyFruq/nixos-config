@@ -34,7 +34,7 @@
     {
       imports = with inputs.self.modules.homeManager; [
         userDefault
-        alacritty
+        kitty
         btop
         firefox
         git
@@ -48,6 +48,7 @@
         shell
         sops
         ssh
+        fastfetch
         vesktop
       ];
 
@@ -147,7 +148,6 @@
         nixfmt-tree
         nixfmt
         dnsutils
-        fastfetch
         ripgrep
         tree-sitter
       ];

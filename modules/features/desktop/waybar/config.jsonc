@@ -56,7 +56,7 @@
     },
     "cpu": {
         "format": "cpu {usage}%",
-        "on-click": "alacritty --class btop -e btop"
+        "on-click": "kitty --class btop -e btop"
     },
     "power-profiles-daemon": {
         "format": "{icon}",
@@ -82,13 +82,13 @@
         "format-ethernet": "eth",
         "tooltip-format": "{ifname}",
         "format-disconnected": "<s>net</s>",
-	"on-click": "alacritty --class netpala -e netpala"
+	"on-click": "kitty --class netpala -e netpala"
     },
     "pulseaudio#sink": {
         "format": "vol {volume}%",
         "format-muted": "<s>vol</s>",
         "scroll-step": 5,
-        "on-click": "alacritty --class wiremix -e wiremix -v output"
+        "on-click": "kitty --class wiremix -e wiremix -v output"
     },
     "custom/recording": {
         "exec": "cat /tmp/waybar-recording 2>/dev/null || echo '{\"text\": \"\"}'",
@@ -126,7 +126,7 @@
         "format-source": "mic {volume}%",
         "format-source-muted": "<s>mic</s>",
         "scroll-step": 5,
-        "on-click": "alacritty --class wiremix -e wiremix -v input",
+        "on-click": "kitty --class wiremix -e wiremix -v input",
         "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"
     }

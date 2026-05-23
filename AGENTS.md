@@ -36,7 +36,7 @@ import-tree ./modules
       → users/sean.nix           (user feature, NixOS-level: user account + HM bridge)
           → users/default.nix    (user template: userDefault — creates user via userCfg options)
           → features/*           (NixOS aspects: localsend)
-          → features/*           (HM aspects: alacritty, btop, firefox, git, niri, nixvim,
+          → features/*           (HM aspects: kitty, btop, firefox, git, niri, nixvim,
                                   opencode, printing, rdp-work, shell, sops, ssh, vesktop)
           + user-specific: git identity, firefox bookmarks, packages
 ```
