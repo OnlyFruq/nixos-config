@@ -80,7 +80,7 @@ layout {
     }
 }
 
-spawn-at-startup "waybar"
+spawn-at-startup    "waybar"
 spawn-sh-at-startup "awww-daemon & until awww query &>/dev/null; do sleep 0.1; done && awww img ~/.local/share/wallpapers/yuta_green.jpg"
 
 hotkey-overlay {
@@ -89,7 +89,7 @@ hotkey-overlay {
 
 prefer-no-csd
 
-screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+screenshot-path "~/Screenshots/%Y-%m-%d %H-%M-%S.png"
 
 animations {
     window-open {
@@ -133,6 +133,11 @@ animations {
     }
 }
 
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
 layer-rule {
     match namespace="^waybar$"
     background-effect {
@@ -146,12 +151,6 @@ layer-rule {
         blur true
         xray false
     }
-}
-
-// Rounded corners for all windows
-window-rule {
-    geometry-corner-radius 12
-    clip-to-geometry true
 }
 
 window-rule {
@@ -208,29 +207,27 @@ window-rule {
 }
 
 binds {
-    Mod+numbersign { show-hotkey-overlay; }
+    Mod+T            { spawn "kitty"; }
+    Mod+Space        { spawn "fuzzel"; }
+    Mod+B            { spawn "firefox"; }
+    Super+Alt+L      { spawn "swaylock"; }
+    Mod+Ctrl+B       { spawn-sh "kitty --class bluetui -e bluetui"; }
+    Mod+Ctrl+A       { spawn-sh "kitty --class wiremix -e wiremix -v playback"; }
+    Mod+Ctrl+W       { spawn-sh "kitty --class netpala -e netpala"; }
+    Mod+Shift+Space  { spawn-sh "pkill waybar || true && waybar"; }
+    Mod+CTRL+Space   { spawn-sh "pkill waybar"; }
 
-    Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
-    Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Mod+B hotkey-overlay-title="Open a Browser: firefox" { spawn "firefox"; }
-    Super+Alt+L allow-when-locked=true hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
-    Mod+Ctrl+B hotkey-overlay-title="Launch Bluetooth Menu: bluetui" { spawn-sh "kitty --class bluetui -e bluetui"; }
-    Mod+Ctrl+A hotkey-overlay-title="Launch Audio TUI: wiremix" { spawn-sh "kitty --class wiremix -e wiremix -v playback"; }
-    Mod+Ctrl+W hotkey-overlay-title="Launch Network TUI: netpala" { spawn-sh "kitty --class netpala -e netpala"; }
-    Mod+Shift+Space hotkey-overlay-title="Enable Waybar" { spawn-sh "pkill waybar || true && waybar"; }
-    Mod+CTRL+Space hotkey-overlay-title="Disable Waybar" { spawn-sh "pkill waybar"; }
+    XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+    XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    XF86AudioMute         allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute      allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
 
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioPlay         allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop         allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev         allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext         allow-when-locked=true { spawn-sh "playerctl next"; }
 
-    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
-    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
-    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
-    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
-
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
     Mod+O repeat=false { toggle-overview; }
@@ -258,7 +255,7 @@ binds {
     Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
 
     Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollUp    cooldown-ms=150 { focus-workspace-up; }
 
     Mod+WheelScrollRight      { focus-column-right; }
     Mod+WheelScrollLeft       { focus-column-left; }
@@ -275,6 +272,7 @@ binds {
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
+
     Mod+Ctrl+1 { move-column-to-workspace 1; }
     Mod+Ctrl+2 { move-column-to-workspace 2; }
     Mod+Ctrl+3 { move-column-to-workspace 3; }
@@ -288,33 +286,33 @@ binds {
     Mod+Comma  { consume-or-expel-window-left; }
     Mod+Period { consume-or-expel-window-right; }
 
-    Mod+R { switch-preset-column-width; }
+    Mod+R       { switch-preset-column-width; }
     Mod+Shift+R { switch-preset-column-width-back; }
 
     Mod+Ctrl+Shift+R { switch-preset-window-height; }
-    Mod+Ctrl+R { reset-window-height; }
+    Mod+Ctrl+R       { reset-window-height; }
 
-    Mod+F { maximize-column; }
+    Mod+F       { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
-    Mod+Ctrl+F { maximize-window-to-edges; }
+    Mod+Ctrl+F  { maximize-window-to-edges; }
 
     Mod+Minus { set-column-width "-10%"; }
-    Mod+Plus { set-column-width "+10%"; }
+    Mod+Plus  { set-column-width "+10%"; }
 
     Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+Plus { set-window-height "+10%"; }
+    Mod+Shift+Plus  { set-window-height "+10%"; }
 
     Mod+V       { toggle-window-floating; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-    Mod+P hotkey-overlay-title="Toggle Power Profile" { spawn "power-toggle"; }
+    
+		Mod+P { spawn "power-toggle"; }
 
-    Mod+C { screenshot; }
-    Mod+Ctrl+C { screenshot-screen; }
-    Mod+Alt+C { screenshot-window; }
+    Mod+C            { screenshot; }
+    Mod+Ctrl+C       { screenshot-screen; }
+    Mod+Alt+C        { screenshot-window; }
     Mod+Ctrl+Shift+C { spawn-sh "screencap"; }
 
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
     Mod+Shift+E { quit; }
-    Ctrl+Alt+Delete { quit; }
  }
