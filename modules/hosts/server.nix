@@ -15,7 +15,7 @@
         hm.enable = true;
       };
 
-      diskoConfigDevice = "/dev/disk/by-id/FIXME-ME";
+      diskoConfigDevice = "/dev/disk/by-id/ata-TOSHIBA_MQ01ABD050_93HRC25TT";
 
       networking.hostName = "server";
 
