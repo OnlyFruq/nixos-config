@@ -154,7 +154,7 @@ layer-rule {
 }
 
 window-rule {
-    match app-id="^kitty$"
+    match app-id="^Alacritty$"
     background-effect {
         blur true
         xray false
@@ -207,13 +207,13 @@ window-rule {
 }
 
 binds {
-    Mod+T            { spawn "kitty"; }
+    Mod+T            { spawn "alacritty"; }
     Mod+Space        { spawn "fuzzel"; }
     Mod+B            { spawn "firefox"; }
     Super+Alt+L      { spawn "swaylock"; }
-    Mod+Ctrl+B       { spawn-sh "kitty --class bluetui -e bluetui"; }
-    Mod+Ctrl+A       { spawn-sh "kitty --class wiremix -e wiremix -v playback"; }
-    Mod+Ctrl+W       { spawn-sh "kitty --class netpala -e netpala"; }
+    Mod+Ctrl+B       { spawn-sh "alacritty --class bluetui -e bluetui"; }
+    Mod+Ctrl+A       { spawn-sh "alacritty --class wiremix -e wiremix -v playback"; }
+    Mod+Ctrl+W       { spawn-sh "alacritty --class netpala -e netpala"; }
     Mod+Shift+Space  { spawn-sh "pkill waybar || true && waybar"; }
     Mod+CTRL+Space   { spawn-sh "pkill waybar"; }
 

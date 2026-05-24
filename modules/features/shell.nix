@@ -48,7 +48,6 @@
           pure_msg = "";
           unknown_msg = "";
           style = "bold cyan";
-          heuristic = true;
         };
       };
     };
