@@ -1,16 +1,20 @@
 { inputs, ... }:
 {
   flake.modules.nixos.server =
-    { ... }:
+    { lib, ... }:
     {
       imports = with inputs.self.modules.nixos; [
-        server-system
+        hostDefault
+        ssh
         disko
         persistence
         sean
       ];
 
-      hostCfg.user.sean.dev = true;
+      hostCfg = {
+        ssh-server.enable = lib.mkDefault true;
+        user.sean.dev = true;
+      };
 
       diskoConfigDevice = "/dev/disk/by-id/ata-TOSHIBA_MQ01ABD050_93HRC25TT";
 

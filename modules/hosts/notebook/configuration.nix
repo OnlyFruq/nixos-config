@@ -1,10 +1,14 @@
 { inputs, ... }:
 {
   flake.modules.nixos.notebook =
-    { ... }:
+    { lib, ... }:
     {
       imports = with inputs.self.modules.nixos; [
-        desktop
+        hostDefault
+        niri
+        printing
+        rdp-work
+        filesharing
         disko
         persistence
         qemu
@@ -13,6 +17,9 @@
 
       hostCfg = {
         flakePath = ".";
+        audio.enable = lib.mkDefault true;
+        niri.enable = lib.mkDefault true;
+        filesharing.enable = lib.mkDefault true;
         printing.enable = true;
         rdp-work.enable = true;
         user.sean = {

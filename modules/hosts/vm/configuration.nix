@@ -1,16 +1,21 @@
 { inputs, ... }:
 {
   flake.modules.nixos.vm =
-    { ... }:
+    { lib, ... }:
     {
       imports = with inputs.self.modules.nixos; [
-        vm-system
+        hostDefault
+        ssh
+        niri
         disko
         persistence
         sean
       ];
 
-      hostCfg.user.sean.desktop = true;
+      hostCfg = {
+        niri.enable = lib.mkDefault true;
+        user.sean.desktop = true;
+      };
 
       home-manager.users.sean.programs.niri.settings.input.mod-key = "Alt";
 

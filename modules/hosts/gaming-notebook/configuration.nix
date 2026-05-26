@@ -1,10 +1,14 @@
 { inputs, ... }:
 {
   flake.modules.nixos.gaming-notebook =
-    { ... }:
+    { lib, ... }:
     {
       imports = with inputs.self.modules.nixos; [
-        desktop
+        hostDefault
+        niri
+        printing
+        rdp-work
+        filesharing
         disko
         persistence
         sean
@@ -12,6 +16,9 @@
 
       hostCfg = {
         flakePath = ".";
+        audio.enable = lib.mkDefault true;
+        niri.enable = lib.mkDefault true;
+        filesharing.enable = lib.mkDefault true;
         user.sean = {
           desktop = true;
           dev = true;
