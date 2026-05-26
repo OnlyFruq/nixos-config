@@ -4,10 +4,9 @@
     programs.starship = {
       enable = true;
       enableZshIntegration = true;
-
       settings = {
         add_newline = false;
-        format = " $nix_shell$cmd_duration\${custom.cwd}$git_branch$git_status$character";
+        format = " $cmd_duration$directory$git_branch$git_status$character";
 
         cmd_duration = {
           min_time = 2000;
@@ -16,14 +15,9 @@
         };
 
         directory = {
-          disabled = true;
-        };
-
-        custom.cwd = {
-          command = "pwd | sed \"s#^$HOME#~#\"";
-          when = "true";
-          format = "[($output)]($style) ";
+          format = "([$path]($style) )";
           style = "bold cyan";
+          truncate_to_repo = false;
         };
 
         git_branch = {
@@ -41,14 +35,6 @@
           error_symbol = "[❯](bold red)";
         };
 
-        nix_shell = {
-          format = "[$symbol$state]($style) ";
-          symbol = "nix-shell";
-          impure_msg = "";
-          pure_msg = "";
-          unknown_msg = "";
-          style = "bold cyan";
-        };
       };
     };
 
@@ -67,6 +53,7 @@
         ignoreAllDups = true;
         extended = true;
       };
+
     };
   };
 }
