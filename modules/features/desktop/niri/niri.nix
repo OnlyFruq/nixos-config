@@ -117,6 +117,7 @@
         };
 
         home.packages = with pkgs; [
+          xwayland-satellite
           awww
           wiremix
           swaylock
