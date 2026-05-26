@@ -5,8 +5,6 @@
     inputs.flake-file.flakeModules.dendritic
   ];
 
-  flake-file.description = "Entry Flake";
-
   flake-file.inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
