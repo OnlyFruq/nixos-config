@@ -126,21 +126,6 @@ in
       home-manager.users.sean = {
         imports = [
           inputs.self.modules.homeManager.sean
-        ]
-        ++ lib.optionals config.userCfg.terminal.enable [ inputs.self.modules.homeManager.terminal ]
-        ++ lib.optionals config.userCfg.browser.enable [ inputs.self.modules.homeManager.browser ]
-        ++ lib.optionals config.userCfg.niri.enable [ inputs.self.modules.homeManager.niri ]
-        ++ lib.optionals config.userCfg.bar.enable [ inputs.self.modules.homeManager.bar ]
-        ++ lib.optionals config.userCfg.lockscreen.enable [ inputs.self.modules.homeManager.lockscreen ]
-        ++ lib.optionals config.userCfg.localsend.enable [ inputs.self.modules.homeManager.localsend ]
-        ++ lib.optionals config.userCfg.libreoffice.enable [ inputs.self.modules.homeManager.libreoffice ]
-        ++ lib.optionals config.userCfg.opencode.enable [ inputs.self.modules.homeManager.opencode ]
-        ++ lib.optionals config.userCfg.vesktop.enable [ inputs.self.modules.homeManager.vesktop ]
-        ++ lib.optionals config.userCfg.printing.enable [ inputs.self.modules.homeManager.printing ]
-        ++ lib.optionals config.userCfg.rdp-work.enable [ inputs.self.modules.homeManager.rdp-work ]
-        ++ lib.optionals config.userCfg.nixvim.enable [
-          inputs.self.modules.homeManager.nixvim
-          inputs.nixvim.homeModules.nixvim
         ];
       }
       // lib.optionalAttrs config.userCfg.niri.enable {

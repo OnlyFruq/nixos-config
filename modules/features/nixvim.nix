@@ -1,7 +1,13 @@
-{ lib, ... }:
+{ inputs, lib, ... }:
 {
-  flake.modules.nixos.nixvim = {
+  flake.modules.nixos.nixvim = { config, ... }: {
     options.userCfg.nixvim.enable = lib.mkEnableOption "Nixvim (Neovim)";
+    config = lib.mkIf config.userCfg.nixvim.enable {
+      home-manager.users.sean.imports = [
+        inputs.self.modules.homeManager.nixvim
+        inputs.nixvim.homeModules.nixvim
+      ];
+    };
   };
 
   flake-file.inputs.nixvim = {

@@ -15,9 +15,14 @@
         hostCfg.niri.enable = lib.mkEnableOption "Niri Wayland compositor";
       };
 
-      config = lib.mkIf config.hostCfg.niri.enable {
-        programs.niri.enable = true;
-      };
+      config = lib.mkMerge [
+        (lib.mkIf config.hostCfg.niri.enable {
+          programs.niri.enable = true;
+        })
+        (lib.mkIf config.userCfg.niri.enable {
+          home-manager.users.sean.imports = [ inputs.self.modules.homeManager.niri ];
+        })
+      ];
     };
 
   flake.modules.homeManager.niri =

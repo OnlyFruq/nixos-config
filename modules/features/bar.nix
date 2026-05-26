@@ -1,7 +1,10 @@
-{ lib, ... }:
+{ inputs, lib, ... }:
 {
-  flake.modules.nixos.bar = {
+  flake.modules.nixos.bar = { config, ... }: {
     options.userCfg.bar.enable = lib.mkEnableOption "Waybar status bar";
+    config = lib.mkIf config.userCfg.bar.enable {
+      home-manager.users.sean.imports = [ inputs.self.modules.homeManager.bar ];
+    };
   };
 
   flake.modules.homeManager.bar =

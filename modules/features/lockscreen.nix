@@ -1,9 +1,12 @@
 { inputs, lib, ... }:
 {
   flake.modules.nixos.lockscreen =
-    { ... }:
+    { config, ... }:
     {
       options.userCfg.lockscreen.enable = lib.mkEnableOption "Swaylock lockscreen and swayidle";
+      config = lib.mkIf config.userCfg.lockscreen.enable {
+        home-manager.users.sean.imports = [ inputs.self.modules.homeManager.lockscreen ];
+      };
     };
 
   flake.modules.homeManager.lockscreen =
