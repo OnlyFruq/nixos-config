@@ -1,1 +1,2 @@
 - update AGENTS.md
+- dont hardcode 26gb hibernation disk swap
