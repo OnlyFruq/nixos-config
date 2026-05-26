@@ -1,28 +1,51 @@
 { inputs, ... }:
 {
   flake.modules.nixos.sean =
-    { pkgs, ... }:
+    { pkgs, config, lib, ... }:
     {
-      users.users.sean = {
-        isNormalUser = true;
-        description = "Sean Tietz";
-        hashedPassword = "$6$T3H3jI/bBMNzxJHi$wmROphZMsgAahqu2dP/H6pquwXvAoKqJ7BIzvuHpI3BaBj7GSjY6EXaDxTZv21OfRKuE0WriJgdm4hyxMoWC8.";
-        shell = pkgs.zsh;
-        openssh.authorizedKeys.keys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIogKvjjq6px3o3FU76R9/FmYYtYeIs0SrqzkaLfx+ru sean.tietz2@gmail.com"
-        ];
-        extraGroups = [
-          "networkmanager"
-          "wheel"
-          "libvirtd"
-        ];
+      options = {
+        hostCfg.user.sean.desktop = lib.mkEnableOption "desktop apps and WM";
+        hostCfg.user.sean.dev = lib.mkEnableOption "dev tooling";
       };
 
-      programs.zsh.enable = true;
+      config = {
+        users.users.sean = {
+          isNormalUser = true;
+          description = "Sean Tietz";
+          hashedPassword = "$6$T3H3jI/bBMNzxJHi$wmROphZMsgAahqu2dP/H6pquwXvAoKqJ7BIzvuHpI3BaBj7GSjY6EXaDxTZv21OfRKuE0WriJgdm4hyxMoWC8.";
+          shell = pkgs.zsh;
+          openssh.authorizedKeys.keys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIogKvjjq6px3o3FU76R9/FmYYtYeIs0SrqzkaLfx+ru sean.tietz2@gmail.com"
+          ];
+          extraGroups = [
+            "networkmanager"
+            "wheel"
+            "libvirtd"
+          ];
+        };
 
-      home-manager.users.sean.imports = [
-        inputs.self.modules.homeManager.sean
-      ];
+        programs.zsh.enable = true;
+
+        home-manager.users.sean.imports =
+          let hm = inputs.self.modules.homeManager; in
+          [ hm.sean ]
+          ++ lib.optionals config.hostCfg.user.sean.desktop (with hm; [
+            terminal
+            browser
+            bar
+            lockscreen
+            discord
+            office-suite
+            filesharing
+            printing
+            rdp-work
+            niri
+          ])
+          ++ lib.optionals config.hostCfg.user.sean.dev (with hm; [
+            neovim
+            opencode
+          ]);
+      };
     };
 
   flake.modules.homeManager.sean =
@@ -45,6 +68,5 @@
         name = "sean tietz";
         email = "sean.tietz2@gmail.com";
       };
-
     };
 }

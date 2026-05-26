@@ -1,4 +1,4 @@
-{ inputs, lib, ... }:
+{ lib, ... }:
 {
   flake-file.inputs = {
     disko = {
@@ -10,8 +10,6 @@
   flake.modules.nixos.disko =
     { config, ... }:
     {
-      imports = [ inputs.disko.nixosModules.disko ];
-
       options.diskoConfigDevice = lib.mkOption {
         type = lib.types.str;
       };

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ ... }:
 {
   flake.modules.homeManager.lockscreen =
     { pkgs, lib, ... }:

@@ -17,7 +17,10 @@
         inputs.netpala.nixosModules.default
       ];
       options.hostCfg.audio.enable = lib.mkEnableOption "Audio Support";
-      options.hostCfg.hm.enable = lib.mkEnableOption "Home-Manager Default";
+      options.hostCfg.flakePath = lib.mkOption {
+        type = lib.types.str;
+        default = "github:sean-imus/nixos-config";
+      };
 
       config = lib.mkMerge [
         (lib.mkIf config.hostCfg.audio.enable {
@@ -30,14 +33,19 @@
             pulse.enable = true;
           };
         })
-        (lib.mkIf config.hostCfg.hm.enable {
+        {
+          environment.shellAliases = {
+            rbs = "sudo nixos-rebuild switch --flake ${config.hostCfg.flakePath}#${config.networking.hostName}";
+            rbb = "sudo nixos-rebuild boot --flake ${config.hostCfg.flakePath}#${config.networking.hostName} && reboot";
+          };
+        }
+
+        {
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
           };
-        })
 
-        {
           time.timeZone = "Europe/Berlin";
           i18n.defaultLocale = "en_US.UTF-8";
           i18n.extraLocaleSettings = {
