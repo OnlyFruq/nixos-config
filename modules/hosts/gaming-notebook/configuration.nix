@@ -26,6 +26,7 @@
       };
 
       diskoConfigDevice = "/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NX0T429820";
+      diskoSwapSize = "34G";
 
       networking.hostName = "gaming-notebook";
 

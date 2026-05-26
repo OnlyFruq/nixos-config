@@ -17,6 +17,7 @@
       };
 
       diskoConfigDevice = "/dev/disk/by-id/ata-TOSHIBA_MQ01ABD050_93HRC25TT";
+      diskoSwapSize = "6G";
 
       networking.hostName = "server";
 

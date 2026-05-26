@@ -10,8 +10,14 @@
   flake.modules.nixos.disko =
     { config, ... }:
     {
-      options.diskoConfigDevice = lib.mkOption {
-        type = lib.types.str;
+      options = {
+        diskoConfigDevice = lib.mkOption {
+          type = lib.types.str;
+        };
+        diskoSwapSize = lib.mkOption {
+          type = lib.types.str;
+          description = "Size of the encrypted swap partition (e.g. \"26G\"). Should be RAM + 2GB for hibernation.";
+        };
       };
 
       config = {
@@ -36,7 +42,7 @@
                 };
 
                 luks = {
-                  end = "-26G";
+                  end = "-${config.diskoSwapSize}";
                   content = {
                     type = "luks";
                     name = "cryptroot";
@@ -68,7 +74,7 @@
                 };
 
                 cryptswap = {
-                  size = "26G";
+                  size = config.diskoSwapSize;
                   content = {
                     type = "luks";
                     name = "cryptswap";
