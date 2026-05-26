@@ -1,7 +1,5 @@
 { ... }:
 {
-  flake.modules.nixos.git = {};
-
   flake.modules.homeManager.git = {
     programs.lazygit = {
       enable = true;

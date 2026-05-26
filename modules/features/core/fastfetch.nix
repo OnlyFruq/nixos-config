@@ -1,7 +1,5 @@
 { ... }:
 {
-  flake.modules.nixos.fastfetch = {};
-
   flake.modules.homeManager.fastfetch = {
     home.shellAliases = {
       ff = "fastfetch";

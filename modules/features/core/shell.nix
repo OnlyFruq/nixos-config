@@ -1,7 +1,5 @@
 { ... }:
 {
-  flake.modules.nixos.shell = {};
-
   flake.modules.homeManager.shell = {
     programs.starship = {
       enable = true;
