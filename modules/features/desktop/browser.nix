@@ -66,6 +66,7 @@
             "doh-rollout.doneFirstRun" = true;
             "browser.download.dir" = "/home/${config.home.username}/";
             "browser.download.useDownloadDir" = false;
+            "browser.download.always_ask_before_handling" = true;
             "browser.bookmarks.addedImportButton" = false;
             "browser.shell.checkDefaultBrowser" = false;
             "browser.toolbars.bookmarks.visibility" = "always";

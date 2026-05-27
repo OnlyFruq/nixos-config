@@ -20,6 +20,12 @@
       config = lib.mkIf config.hostCfg.niri.enable {
         programs.niri.enable = true;
         programs.niri.package = pkgs.niri;
+
+        xdg.portal = {
+          enable = true;
+          extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+          config.common.default = "gtk";
+        };
       };
     };
 
