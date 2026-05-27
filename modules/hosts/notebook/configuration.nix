@@ -19,7 +19,6 @@
         flakePath = ".";
         audio.enable = lib.mkDefault true;
         qemu.enable = true;
-        printing.enable = true;
         rdp-work.enable = true;
         user.sean = {
           desktop = true;
