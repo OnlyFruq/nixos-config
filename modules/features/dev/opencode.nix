@@ -1,7 +1,7 @@
 { ... }:
 {
   flake.modules.homeManager.opencode =
-    { pkgs, config, ... }:
+    { pkgs, ... }:
     {
       home.shellAliases = {
         c = "opencode";
