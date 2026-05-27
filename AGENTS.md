@@ -1,5 +1,7 @@
 # AGENTS.md — NixOS Config
 
+Last updated: 2026-05-28
+
 Single-machine NixOS config using the **Dendritic Design** pattern with **flake-parts**.
 
 ## Architecture
@@ -7,62 +9,78 @@ Single-machine NixOS config using the **Dendritic Design** pattern with **flake-
 - **`flake.nix` is auto-generated** by `vic/flake-file`. Do not edit — header says `# DO-NOT-EDIT`. Regenerate with `nix run .#write-flake`.
 - **All `.nix` files under `modules/` are auto-imported** by `vic/import-tree`. No manual `imports` list in `flake.nix`.
 - **Files must be `git add`-ed** before flake evaluation sees them. Untracked files are invisible to Nix flake evaluation.
-- **`import-tree` excludes** paths containing `/_`.
+- **`import-tree` excludes** paths containing `/_` — use this prefix for helper files imported by a parent module (e.g. `_keybindings.nix`).
 
 ## Module Layout
 
 ```
 modules/
-├── nix/flake-parts.nix       ← framework entrypoint, mkNixos helper, nixosConfigurations
+├── nix/flake-parts.nix              ← framework entrypoint, mkNixos helper, nixosConfigurations
 ├── hosts/
-│   ├── default.nix           ← host defaults (hostDefault — timezone, locale, boot, networking)
-│   ├── notebook.nix          ← Intel laptop (full desktop + dev)
-│   ├── gaming-notebook.nix   ← Intel + Nvidia laptop (full desktop + dev)
-│   ├── vm.nix                ← VM (desktop, no dev)
-│   └── server.nix            ← headless server (SSH + dev, no GUI)
+│   ├── default.nix                  ← host defaults (hostDefault — timezone, locale, boot, networking, pkgs, zsh)
+│   ├── notebook/configuration.nix   ← Intel laptop (full desktop + dev)
+│   ├── gaming-notebook/configuration.nix ← Intel + Nvidia laptop (full desktop + dev)
+│   ├── vm/configuration.nix         ← VM (desktop, no dev)
+│   └── server/configuration.nix     ← headless server (dev only, no GUI)
 ├── users/
-│   ├── default.nix           ← user template (userDefault — home.stateVersion)
-│   └── sean.nix              ← single user module, features option-gated per host
-├── features/                 ← self-contained, user-independent feature modules
-└── features/desktop/         ← nested feature directory (niri)
+│   ├── default.nix                  ← user template (userDefault — home.stateVersion)
+│   └── sean.nix                     ← single user module, desktop features option-gated per host
+├── features/
+│   ├── core/                        ← always-on user features: btop, fastfetch, git, shell, sops, ssh
+│   ├── desktop/                     ← desktop features (gated by hostCfg.user.sean.desktop)
+│   │   ├── niri/                    ← niri compositor split into sub-modules
+│   │   │   ├── default.nix          ← core: NixOS module, input, layout, animations, window/layer rules
+│   │   │   ├── _keybindings.nix     ← all keybindings (media keys, navigation, workspace, app launchers)
+│   │   │   └── _utilities.nix       ← playerctld, hidden desktop entries, home packages + shell scripts
+│   │   ├── application-launcher.nix ← fuzzel
+│   │   ├── bar.nix                  ← waybar
+│   │   ├── browser.nix              ← firefox
+│   │   ├── discord.nix              ← vesktop
+│   │   ├── filesharing.nix          ← localsend
+│   │   ├── lockscreen.nix           ← swaylock
+│   │   ├── notifications.nix        ← mako
+│   │   ├── office-suite.nix         ← libreoffice
+│   │   ├── printing.nix             ← CUPS + SANE
+│   │   ├── rdp-work.nix             ← RDP work network profile (user-specific, exception to feature rules)
+│   │   └── terminal.nix             ← alacritty
+│   ├── dev/                         ← dev tooling (always-on): neovim (nixvim), opencode
+│   ├── secrets/                     ← sops-nix + encrypted secrets
+│   ├── storage/                     ← disko, persistence (impermance)
+│   └── virtualization/              ← qemu/libvirt
 ```
 
-## Option-Gated User Features
+## Host ↔ User Import Flow
 
-User features are **option-gated** via `hostCfg.user.sean.*` — the single `sean.nix` module declares
-what it *can* do, each host chooses what to *enable*:
+Each host imports `sean` (the NixOS user module). `sean.nix` then bridges into Home Manager:
+
+```
+Host (e.g. server/configuration.nix)
+  └─ imports: sean (NixOS module)
+       └─ creates user account (always)
+       └─ home-manager.users.sean.imports:
+            ├─ core (always): sean, btop, fastfetch, git, shell, sops, ssh, userDefault
+            ├─ dev (always): neovim, opencode
+            └─ desktop (gated): niri, bar, browser, terminal, etc.
+```
+
+### Option-Gated Desktop Features
+
+Only `hostCfg.user.sean.desktop` gates features — dev tooling is always-on for all hosts:
 
 ```nix
-# notebook.nix / gaming-notebook.nix
-hostCfg.user.sean = { gui.enable = true;  dev.enable = true;  };
+# notebook / gaming-notebook
+hostCfg.user.sean.desktop = true;
 
-# vm.nix
-hostCfg.user.sean = { gui.enable = true;  dev.enable = false; };
+# vm
+hostCfg.user.sean.desktop = true;
 
-# server.nix
-hostCfg.user.sean = { gui.enable = false; dev.enable = true;  };
+# server
+# (not set → defaults to false, no desktop features)
 ```
 
-- **gui.enable** → desktop features: alacritty, firefox, niri, vesktop, opencode, localsend, libreoffice, printing HM, rdp-work HM
-- **dev.enable** → nixvim (neovim config with LSP, plugins)
+- **desktop = true** → niri, waybar, alacritty, firefox, vesktop, localsend, libreoffice, swaylock, fuzzel, mako, printing, rdp-work
 - **Always on** (core): btop, fastfetch, git, shell, sops, ssh, userDefault
-
-## Import Chain
-
-```
-import-tree ./modules
-  → nix/flake-parts.nix              (flake-parts + flake-file, mkNixos helper)
-  → hosts/default.nix                (merged host defaults: timezone, locale, boot, networking, pkgs)
-  → hosts/<host>.nix                 (NixOS host config)
-      → features/*                   (NixOS aspects: disko, impermanence, printing, qemu, rdp-work, niri, ssh)
-      → users/sean.nix               (user module: account + HM bridge)
-          + always:  users/default.nix, core HM features (btop, git, shell, sops, ssh)
-          + if gui:   alacritty, firefox, niri, vesktop, opencode, localsend, libreoffice, printing, rdp-work
-          + if dev:   nixvim
-          + user-specific: git identity, authorizedKeys, packages
-```
-
-The user module is **single and option-gated** — no separate user profiles per host.
+- **Always on** (dev): neovim (nixvim), opencode
 
 ## Feature Module Pattern
 
@@ -73,6 +91,8 @@ Each feature file declares aspects under `flake.modules.<class>.<name>`:
   flake.modules.homeManager.<name> = { ... }; # HM config (optional)
 }
 ```
+
+Features are **self-contained** — importing a feature module activates it. No `hostCfg.*.enable` toggles needed. The host's `imports` list is the gate.
 
 Features must be **user-independent** — no hardcoded usernames, bookmarks, etc.
 Exception: `rdp-work.nix` may contain user-specific data.
@@ -85,9 +105,7 @@ User-specific data (git identity, bookmarks, extra packages) goes in `users/<use
 - **`flake.modules.nixos.userDefault`** — NixOS-side: placeholder for future common user NixOS config.
 - **`flake.modules.homeManager.default`** — HM-side: sets `home.stateVersion` as a project-wide default.
 
-Individual user configs (e.g., `users/sean.nix`) import the template and handle all user-specific config directly — account creation, features, git identity, packages, bookmarks.
-
-User features are **option-gated** via `hostCfg.user.<name>.*` options — the single `<name>.nix` module declares what it *can* do, each host chooses what to *enable*. This avoids separate user profiles per host.
+Individual user configs (e.g., `users/sean.nix`) import the template and handle all user-specific config directly — account creation, features, git identity, packages.
 
 ## Key Commands
 
@@ -96,10 +114,10 @@ User features are **option-gated** via `hostCfg.user.<name>.*` options — the s
 | `nix flake check --no-build` | Quick eval check (fine for small changes) |
 | `nix flake check --no-build --no-eval-cache` | Force fresh eval (cache busting) |
 | `nix build '.#nixosConfigurations.notebook.config.system.build.toplevel' --dry-run` | Dry build — **always verify big changes** with this |
-
-Rule of thumb: `nix flake check` catches eval errors but misses option type mismatches and other deep issues. Any non-trivial change (restructuring, moving config, adding modules) needs a dry build.
 | `nix run .#write-flake` | Regenerate `flake.nix` |
 | `nix run .#write-lock` | Regenerate `flake.lock` |
+
+Rule of thumb: `nix flake check` catches eval errors but misses option type mismatches and other deep issues. Any non-trivial change (restructuring, moving config, adding modules) needs a dry build.
 
 ## Gotchas
 
@@ -128,17 +146,17 @@ After adding a `flake-file.inputs` declaration, **you must run `nix run .#write-
 
 ## SOPS secrets
 
-SSH private key and other secrets managed via **sops-nix** (HM module, `modules/features/sops.nix`).
+SSH private key and other secrets managed via **sops-nix** (HM module, `modules/features/secrets/sops.nix`).
 
 ### Architecture
 
 - **Age key** lives at `~/.ssh/sops_age_key` (preserved via impermanence as a single file). Only this one file persists — sops provisions everything else.
-- **Encrypted secrets** are in `modules/secrets/secrets.yaml`, committed to git with `sops` metadata.
+- **Encrypted secrets** are in `modules/features/secrets/secrets.yaml`, committed to git with `sops` metadata.
 - Decryption uses the age key on-disk at activation time. No machine/host keys involved.
 
 ### Adding a new secret
 
-1. In `modules/features/sops.nix`, add an entry to `sops.secrets`:
+1. In `modules/features/secrets/sops.nix`, add an entry to `sops.secrets`:
    ```nix
    sops.secrets."my_secret_name" = {
      path = "${config.home.homeDirectory}/some/path";
@@ -147,14 +165,14 @@ SSH private key and other secrets managed via **sops-nix** (HM module, `modules/
    ```
 2. Edit the encrypted file to add the key-value pair:
    ```bash
-   nix run nixpkgs#sops -- modules/secrets/secrets.yaml
+   nix run nixpkgs#sops -- modules/features/secrets/secrets.yaml
    ```
 3. Rebuild.
 
 ### Updating a secret
 
 ```bash
-nix run nixpkgs#sops -- modules/secrets/secrets.yaml
+nix run nixpkgs#sops -- modules/features/secrets/secrets.yaml
 ```
 Edit the value, save — sops re-encrypts automatically. Rebuild to deploy.
 
@@ -167,7 +185,7 @@ nix shell nixpkgs#age -c age-keygen -o ~/.ssh/sops_age_key
 Get the public key, update `.sops.yaml`, then re-encrypt `secrets.yaml`:
 ```bash
 sops --rotate --age $(nix shell nixpkgs#age -c age-keygen -y ~/.ssh/sops_age_key) \
-  modules/secrets/secrets.yaml
+  modules/features/secrets/secrets.yaml
 ```
 Commit, rebuild.
 
@@ -182,22 +200,19 @@ age-keygen -o ~/.ssh/sops_age_key &&              # generate new key
 sudo nixos-rebuild switch --flake .#notebook
 ```
 
-Neovim is configured via **[nixvim](https://nix-community.github.io/nixvim)** (github:nix-community/nixvim), a fully declarative Neovim module system. The config lives in `modules/features/nixvim.nix`.
+## Neovim (nixvim)
 
-### Adding nixvim to a new host/user
-
-1. **Declare the input**: `nixvim.nix` already declares `flake-file.inputs` for nixvim. If starting from scratch, add a similar block.
-2. **Enable on a host**: Set `hostCfg.user.<name>.dev.enable = true` in the host config. This conditionally bridges `inputs.nixvim.homeModules.nixvim` and the local nixvim config into the HM user.
-3. **Regenerate flake.nix**: `nix run .#write-flake` and `git add` the result.
+Neovim is configured via **[nixvim](https://nix-community.github.io/nixvim)** (github:nix-community/nixvim), a fully declarative Neovim module system. The config lives in `modules/features/dev/neovim.nix`.
 
 ### Key nixvim options
 
 - LSP servers are at `plugins.lsp.servers.<name>`. Dedicated nixvim modules exist for `pylsp` (very comprehensive — Jedi, pycodestyle, pyflakes, autopep8, yapf, flake8, pylint, mypy, black, ruff, etc.), `ccls`, `hls`, `rust-analyzer`, `svelte`. Every server from nvim-lspconfig is auto-generated.
-- `nixd` settings are wrapped as `nixd = cfg;`. Configure formatting with `plugins.lsp.servers.nixd.settings.formatting.command = [ "nixpkgs-fmt" ]`.
+- `nixd` settings are wrapped as `nixd = cfg;`. Configure formatting with `plugins.lsp.servers.nixd.settings.formatting.command = [ "nixfmt" ]`.
 - `plugins.lsp.keymaps.lspBuf` and `plugins.lsp.keymaps.diagnostic` take `{ key = "action" }` attrsets (e.g. `{ K = "hover"; gd = "definition"; }`).
-- Plugins with nixvim modules: `gitsigns`, `neo-tree` (file explorer), `lazygit`, `nvim-autopairs`, `which-key`, `lualine`, `treesitter`, `noice`, etc.
+- Plugins with nixvim modules: `gitsigns`, `neo-tree` (file explorer), `lazygit`, `nvim-autopairs`, `which-key`, `lualine`, `treesitter`, `noice`, `snacks`, `conform-nvim`, etc.
 - Falling back to raw Lua: use `extraConfigLua`, `extraConfigLuaPre`, or `extraConfigLuaPost`.
 - `programs.nixvim.enable = true` replaces `programs.neovim`. Set `home.sessionVariables.EDITOR = "nvim"` for default editor behavior.
+- Suppress nixpkgs source warning: `programs.nixvim.nixpkgs.source = inputs.nixpkgs;`
 
 ### Verification
 
@@ -217,7 +232,7 @@ Disk (NVMe by-id)
 ├─ ESP (vfat, 1G, /boot)
 └─ LUKS (cryptroot, 100%)
    └─ GPT (nested)
-      ├─ swap (24G)      ← encrypted hibernation
+      ├─ swap (variable, set per-host via `diskoSwapSize`)
       └─ BTRFS (remaining)
          ├─ @nix (/nix)     ← compress=zstd, noatime
          └─ @persist (/persist) ← compress=zstd, noatime
@@ -231,12 +246,12 @@ Disk (NVMe by-id)
 
 | File | Purpose |
 |------|---------|
-| `modules/features/disko.nix` | GPT + LUKS + nested GPT (swap + BTRFS subvols) + tmpfs root; parameterized `diskoConfigDevice` option |
-| `modules/features/impermanence.nix` | Preservation config: /etc/NetworkManager/system-connections, /var/lib/bluetooth, /var/lib/systemd/timers, machine-id, SSH host keys, user ~/.ssh/sops_age_key, ~/persist, wireplumber |
-| `modules/hosts/notebook.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + impermanence |
-| `modules/hosts/gaming-notebook.nix` | Sets `diskoConfigDevice` placeholder, imports disko + impermanence |
-| `modules/hosts/vm.nix` | Sets `diskoConfigDevice` to virtio path, imports disko + impermanence |
-| `modules/hosts/server.nix` | Sets `diskoConfigDevice` to SATA by-id path, imports disko + impermanence |
+| `modules/features/storage/disko.nix` | GPT + LUKS + nested GPT (swap + BTRFS subvols) + tmpfs root; parameterized `diskoConfigDevice` option |
+| `modules/features/storage/persistence.nix` | Preservation config: /etc/NetworkManager/system-connections, /var/lib/systemd/timers, /var/lib/libvirt/, /etc/machine-id, SSH host keys, user ~/.ssh/sops_age_key, ~/.local/state/wireplumber, ~/persist |
+| `modules/hosts/notebook/configuration.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + persistence |
+| `modules/hosts/gaming-notebook/configuration.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + persistence |
+| `modules/hosts/vm/configuration.nix` | Sets `diskoConfigDevice` to virtio path, imports disko + persistence |
+| `modules/hosts/server/configuration.nix` | Sets `diskoConfigDevice` to SATA by-id path, imports disko + persistence |
 
 ### Fresh Install (disko-install)
 
@@ -271,7 +286,7 @@ cd ~/persist/nixos-config
 sudo nixos-rebuild switch --flake .#notebook    # or `rbs` alias
 ```
 
-No `/etc/nixos` symlink needed — `--flake` accepts any path. `rbs` alias is defined per-host (`hosts/<host>.nix`) — uses local flake (`. #<host>`) for notebooks, remote GitHub flake for vm/server.
+No `/etc/nixos` symlink needed — `--flake` accepts any path. `rbs` alias is defined per-host via `hostCfg.flakePath` — defaults to `github:sean-imus/nixos-config`, overridden to `"."` on notebooks for local flake evaluation.
 
 ### Gotchas
 
@@ -282,4 +297,3 @@ No `/etc/nixos` symlink needed — `--flake` accepts any path. `rbs` alias is de
 - **Configs no longer depend on repo clone**: All file references use nix store paths (relative `./` paths in modules). Desktop configs work on first boot out of the box without cloning.
 - **`~/persist/nixos-config` survives reboots** because `~/persist` is a bind-mount into `/persist/home/sean/persist`.
 - **Commit before testing**: Nix reads from git tree. `git add` new `.nix` files, commit changes before `disko-install` or remote evaluation.
-- **Private repo**: set `NIX_CONFIG="access-tokens = github.com=<token>"` on live USB.
