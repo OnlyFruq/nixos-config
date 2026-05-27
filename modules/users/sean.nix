@@ -40,6 +40,8 @@
             printing
             rdp-work
             niri
+            application-launcher
+            notifications
           ])
           ++ lib.optionals config.hostCfg.user.sean.dev (with hm; [
             neovim
