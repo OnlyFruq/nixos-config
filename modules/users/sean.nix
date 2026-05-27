@@ -24,24 +24,22 @@
           ];
         };
 
-        programs.zsh.enable = true;
-
         home-manager.users.sean.imports =
           let hm = inputs.self.modules.homeManager; in
           [ hm.sean ]
           ++ lib.optionals config.hostCfg.user.sean.desktop (with hm; [
-            terminal
-            browser
+            application-launcher
             bar
-            lockscreen
+            browser
             discord
-            office-suite
             filesharing
+            lockscreen
+            notifications
+            niri
+            office-suite
             printing
             rdp-work
-            niri
-            application-launcher
-            notifications
+            terminal
           ])
           ++ lib.optionals config.hostCfg.user.sean.dev (with hm; [
             neovim
