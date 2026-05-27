@@ -118,6 +118,11 @@
             action = "<cmd>LazyGit<CR>";
             options.desc = "Open lazygit";
           }
+          {
+            key = "<leader>q";
+            action = "<cmd>nohlsearch<CR>";
+            options.desc = "Clear search highlights";
+          }
         ];
 
         extraConfigLua = ''
