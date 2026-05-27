@@ -1,18 +1,22 @@
-{ ... }:
+{ inputs, ... }:
 {
-  flake.modules.homeManager.fastfetch = {
-    home.shellAliases = {
-      ff = "fastfetch";
-    };
+  flake-file.inputs.areofyl-fetch = {
+    url = "github:areofyl/fetch";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
-    programs.fastfetch = {
-      enable = true;
-      settings = {
-        modules = [
-          "title"
-          "chassis"
-          "datetime"
-          "separator"
+  flake.modules.homeManager.fastfetch =
+    { pkgs, ... }:
+    {
+      imports = [ inputs.areofyl-fetch.homeManagerModules.default ];
+
+      home.shellAliases = {
+        ff = "fetch";
+      };
+
+      programs.fetch = {
+        enable = true;
+        info = [
           "os"
           "host"
           "kernel"
@@ -23,14 +27,13 @@
           "memory"
           "swap"
           "disk"
-          "monitor"
-          "de"
+          "display"
           "wm"
           "shell"
-          "terminal"
-          "editor"
+          "colors"
         ];
+        spin = "xy";
+        speed = 1.0;
       };
     };
-  };
 }

@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "areofyl-fetch": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779038093,
+        "narHash": "sha256-OWKgMUoJhoG/7jmB3SXRUAOy+vbfnSBy0aKfmSRUAw8=",
+        "owner": "areofyl",
+        "repo": "fetch",
+        "rev": "b7c755661246dc9f45839f92f232680ef8e02a93",
+        "type": "github"
+      },
+      "original": {
+        "owner": "areofyl",
+        "repo": "fetch",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -318,6 +338,7 @@
     },
     "root": {
       "inputs": {
+        "areofyl-fetch": "areofyl-fetch",
         "disko": "disko",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
