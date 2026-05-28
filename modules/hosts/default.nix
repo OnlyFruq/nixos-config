@@ -115,6 +115,7 @@
             tldr
             bat
             zsh
+            ntfs3g
           ];
 
           services.fwupd.enable = true;
