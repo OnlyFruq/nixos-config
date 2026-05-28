@@ -115,6 +115,7 @@
             tldr
             bat
             zsh
+            ncdu
             ntfs3g
           ];
 
