@@ -5,13 +5,13 @@ My personal NixOS configuration for my school notebook, gaming notebook, server 
 
 ## What is this? (for non-Nix people)
 
-Most operating systems work like a backpack: you keep throwing things in, and over months or years it gets heavier, messier, and you're never quite sure what's in there. If something breaks, good luck figuring out what changed. Trying to migrate to a different PC? Wanting to use multiple PCs concurrently? Need to reinstall your system for whatever reason? Hell on Earth on other OS's compared to how I manage it.
+Most operating systems work like a backpack: you keep throwing things in, and over months or years it gets heavier, messier, and you're never quite sure what's in there. If something breaks, good luck figuring out what changed. Trying to migrate to a different PC? Wanting to use multiple PCs concurrently? Need to reinstall your system for whatever reason? Hell on Earth on other OSes compared to how I manage it.
 
-My entire operating system: disk layout, installed programs, desktop environment, users and all their configurations, settings, everything is **defined as code in a single Git repository**. This makes it transferable, immutable and most importantly reproducible.
+My entire operating system: disk layout, installed programs, desktop environment, users and all their configurations, settings, everything is **defined as code in a single Git repository**. This makes it transferable, immutable, and most importantly, reproducible.
 
-**Nothing else sticks unless you opt in.** The system root is wiped on every reboot. That means no orphaned config files, no dependency rot, no accumulated junk. Only what you explicitly declare gets preserved: things like SSH keys, Wi-Fi passwords, audio settings, and anything you put in `~/persist`. Browser cache, downloads, those screenshots you forgot, all gone. A factory reset every time you turn it on, but your actual important stuff is still there. This is the closest one will ever get to having one central location depicting the entire truth of their Operating system. What is not declared in this repo **will not** exist after a reboot. This is powerful and lets you experiment however much you like. Break your ssh config? Reboot. Deleted your entire home directory? Reboot. It will be like nothing ever happened. 
+**Nothing else sticks unless you opt in.** The system root is wiped on every reboot. That means no orphaned config files, no dependency rot, no accumulated junk. Only what you explicitly declare gets preserved: things like SSH keys, Wi-Fi passwords, audio settings, and anything you put in `~/persist`. Browser cache, downloads, those screenshots you forgot, all gone. A factory reset every time you turn it on, but your actual important stuff is still there. This is the closest one will ever get to having one central location depicting the entire truth of their operating system. What is not declared in this repo **will not** exist after a reboot. This is powerful and lets you experiment however much you like. Break your SSH config? Reboot. Delete your entire home directory? Reboot. It will be like nothing ever happened. 
 
-**Total peace of mind.** Every system rebuild creates a new immutable "generation" that sits next to all previous ones in your boot menu. You edited your NixOS config and something broke? Reboot and pick the last working generation. Experiment backfired? Same thing. You can't lose your system there's always a working entry to fall back to. And if your drive dies or you get a new laptop, two commands rebuild the *exact* same system from scratch just like if you just rebooted a totally working System. No manual disk setup, no "I forgot what I had installed," no drift from what worked before.
+**Total peace of mind.** Every system rebuild creates a new immutable "generation" that sits next to all previous ones in your boot menu. You edited your NixOS config and something broke? Reboot and pick the last working generation. Experiment backfired? Same thing. You can't lose your system. There's always a working entry to fall back to. And if your drive dies or you get a new laptop, two commands rebuild the *exact* same system from scratch, just like rebooting a totally working system. No manual disk setup, no "I forgot what I had installed," no drift from what worked before.
 
 **What's in this config:**
 
@@ -26,7 +26,7 @@ My entire operating system: disk layout, installed programs, desktop environment
 
 ## How?
 
-Now that we have gotten the top-level stuff out of the way, let's talk about how all that nice sounding stuff actually comes to life. Warning, it will be technical, please ask your local Nix expert, the web or even an AI about the terms I will be using here.
+Now that we have gotten the top-level stuff out of the way, let's talk about how all that nice-sounding stuff actually comes to life. Warning: it will be technical. Please ask your local Nix expert, the web, or even an AI about the terms I will be using here.
 
 ### **The Nix Language.**
 All the code you see in this repo was written in Nix. It's most commonly described as JSON with functions, but that doesn't do it justice. Its goal is to configure environments, nothing more, nothing less.
@@ -45,13 +45,13 @@ Hardware differences are handled the same way. Each host sets its own `diskoConf
 
 ### Secrets in git, decrypted at boot
 
-My SSH private key, API keys, and other sensitive data live in an encrypted `secrets.yaml` file that is committed to git as plaintext ciphertext. An age key stored on disk (and preserved across reboots) decrypts everything at activation time. sops-nix then places each secret at the correct path with the correct permissions automatically. Rotate the key? Generate a new one, re-encrypt, commit, rebuild. Done. Reinstall NixOS? Just restore the age key from backup and everything provisions itself.
+My SSH private key, API keys, and other sensitive data live in an encrypted `secrets.yaml` file that is committed to git as ciphertext. An age key stored on disk (and preserved across reboots) decrypts everything at activation time. sops-nix then places each secret at the correct path with the correct permissions automatically. Rotate the key? Generate a new one, re-encrypt, commit, rebuild. Done. Reinstall NixOS? Just restore the age key from backup and everything provisions itself.
 
-This is the one thing that isn't fully declarative — the age key has to exist on disk before sops can decrypt anything. But managing one key beats remembering where to put eight SSH keys and a dozen API tokens across a fresh install.
+This is the one thing that isn't fully declarative: the age key has to exist on disk before sops can decrypt anything. But managing one key beats remembering where to put eight SSH keys and a dozen API tokens across a fresh install.
 
 ### Disks as code
 
-No `fdisk`, no `cryptsetup`, no `mkfs.btrfs` during System Installation. The entire disk layout, ESP partition, LUKS encryption, GPT, Btrfs subvolumes, encrypted swap, is defined as Nix code. A single parameter (`diskoConfigDevice`) changes between hosts to point at the right physical drive. The `disko` command sets partitions, formats and mounts.
+No `fdisk`, no `cryptsetup`, no `mkfs.btrfs` during system installation. The entire disk layout (ESP partition, LUKS encryption, GPT, Btrfs subvolumes, encrypted swap) is defined as Nix code. A single parameter (`diskoConfigDevice`) changes between hosts to point at the right physical drive. The `disko` command partitions, formats, and mounts.
 
 ## Installation
 
