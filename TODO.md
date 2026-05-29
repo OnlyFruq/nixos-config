@@ -1,1 +1,2 @@
 - rewrite README.md
+- dont preserver tailscale folder, use sops to manage auth
