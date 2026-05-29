@@ -13,6 +13,7 @@
         persistence
         qemu
         sean
+        tailscale
       ];
 
       hostCfg = {
