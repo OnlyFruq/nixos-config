@@ -1,2 +1,3 @@
-- rewrite README.md
 - dont preserver tailscale folder, use sops to manage auth
+- add torrentbox as a known host declaratively also create an alias to connect to it
+- add a torrentbox host server config
