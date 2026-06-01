@@ -1,12 +1,8 @@
 { inputs, ... }:
 {
   flake.modules.nixos.sean =
-    { pkgs, config, lib, ... }:
+    { pkgs, ... }:
     {
-      options = {
-        hostCfg.user.sean.desktop = lib.mkEnableOption "desktop apps and WM";
-      };
-
       config = {
         users.users.sean = {
           isNormalUser = true;
@@ -24,23 +20,11 @@
           ];
         };
 
-        home-manager.users.sean.imports =
-          let hm = inputs.self.modules.homeManager; in
-          [ hm.sean hm.neovim hm.opencode ]
-          ++ lib.optionals config.hostCfg.user.sean.desktop (with hm; [
-            application-launcher
-            bar
-            browser
-            discord
-            filesharing
-            lockscreen
-            notifications
-            niri
-            office-suite
-            printing
-            rdp-work
-            terminal
-          ]);
+        home-manager.users.sean.imports = with inputs.self.modules.homeManager; [
+          sean
+          neovim
+          opencode
+        ];
       };
     };
 

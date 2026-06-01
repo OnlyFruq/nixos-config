@@ -5,21 +5,16 @@
     {
       imports = with inputs.self.modules.nixos; [
         hostDefault
-        niri
-        printing
-        rdp-work
-        filesharing
         disko
         persistence
         qemu
-        sean
+        sean-desktop
         tailscale
       ];
 
       hostCfg = {
         flakePath = ".";
         audio.enable = true;
-        user.sean.desktop = true;
       };
 
       diskoConfigDevice = "/dev/disk/by-id/nvme-SAMSUNG_MZALQ512HALU-000L2_S4UKNF0R457642";

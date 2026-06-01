@@ -5,15 +5,10 @@
     {
       imports = with inputs.self.modules.nixos; [
         hostDefault
-        niri
         disko
         persistence
-        sean
+        sean-desktop
       ];
-
-      hostCfg = {
-        user.sean.desktop = true;
-      };
 
       home-manager.users.sean.programs.niri.settings.input.mod-key = "Alt";
 

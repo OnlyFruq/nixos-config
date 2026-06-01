@@ -5,21 +5,14 @@
     {
       imports = with inputs.self.modules.nixos; [
         hostDefault
-        niri
-        printing
-        rdp-work
-        filesharing
         disko
         persistence
-        sean
+        sean-desktop
       ];
 
       hostCfg = {
         flakePath = ".";
         audio.enable = true;
-        user.sean = {
-          desktop = true;
-        };
       };
 
       diskoConfigDevice = "/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NX0T429820";
