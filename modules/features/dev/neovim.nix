@@ -138,12 +138,6 @@
             action = "<cmd>w<CR>";
             options.desc = "Save file";
           }
-          {
-            key = "ö";
-            mode = "c";
-            action = ":";
-            options.desc = "Map ö to : in command mode";
-          }
         ];
 
         extraConfigLua = ''
