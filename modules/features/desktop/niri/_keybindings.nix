@@ -305,7 +305,7 @@
       action.spawn = "alacritty";
     };
     "Mod+B" = {
-      action.spawn = "firefox";
+      action.spawn = "qutebrowser";
     };
     "Mod+Ctrl+B" = {
       action.spawn = [

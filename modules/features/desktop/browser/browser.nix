@@ -1,0 +1,172 @@
+{ ... }:
+let
+  startPage = "file://${./_start-page.html}";
+in
+{
+  flake.modules.homeManager.browser =
+    { pkgs, config, lib, ... }:
+    {
+      home.packages = with pkgs; [
+        hunspellDicts.en_US
+        hunspellDicts.de_DE
+      ];
+
+      home.sessionVariables.DICPATH = lib.makeSearchPath "share/hunspell" [
+        pkgs.hunspellDicts.en_US
+        pkgs.hunspellDicts.de_DE
+      ];
+
+      programs.qutebrowser = {
+        enable = true;
+        package = pkgs.qutebrowser;
+
+        searchEngines = {
+          DEFAULT = "https://duckduckgo.com/?q={}";
+          ns = "https://search.nixos.org/options?channel=unstable&include_home_manager_options=1&include_modular_service_options=1&include_nixos_options=1&query={}";
+          np = "https://search.nixos.org/packages?channel=unstable&query={}";
+          nw = "https://niri-wm.github.io/niri/?search={}";
+          gh = "https://github.com/search?q={}&type=repositories";
+        };
+
+        quickmarks = {
+          oo = "https://outlook.cloud.microsoft/mail/";
+          tt = "https://teams.cloud.microsoft/";
+          td = "https://app.fizzy.do/6172759/boards/03fqfadkang7940o21lqrzl2e/columns/stream";
+          cp = "https://m365.cloud.microsoft/chat";
+          ma = "https://admin.cloud.microsoft/";
+          sa = "https://central.sophos.com/manage/overview/dashboard";
+          sw = "https://www.swyxon.com/ControlCenter";
+          em = "https://ms.hees.de/email_security/email_livetracking";
+          eg = "https://mein.einfachgast.de/live";
+          pe = "https://www.photopea.com/";
+          br = "https://www.remove.bg/";
+          gm = "https://app.diagrams.net/";
+        };
+
+        settings = {
+          url = {
+            start_pages = [ startPage ];
+            default_page = startPage;
+            open_base_url = true;
+          };
+
+          content = {
+            autoplay = false;
+            notifications.enabled = false;
+            javascript.clipboard = true;
+            blocking = {
+              enabled = true;
+              method = "both";
+              adblock.lists = [
+                "https://easylist.to/easylist/easylist.txt"
+                "https://easylist.to/easylist/easyprivacy.txt"
+                "https://easylist.to/easylistgermany/easylistgermany.txt"
+              ];
+              hosts.lists = [
+                "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+              ];
+            };
+            pdfjs = true;
+          };
+
+          downloads = {
+            location = {
+              directory = config.home.homeDirectory;
+              prompt = true;
+            };
+            position = "bottom";
+            remove_finished = 3000;
+          };
+
+          editor.command = [
+            "alacritty"
+            "--class"
+            "editor"
+            "-e"
+            "nvim"
+            "{file}"
+          ];
+
+          spellcheck.languages = [ "en-US" "de-DE" ];
+
+          tabs = {
+            position = "top";
+            show = "multiple";
+            title.format = "{audio}{index}: {current_title}";
+            favicons.show = "never";
+            padding = {
+              top = 4;
+              bottom = 4;
+              left = 8;
+              right = 8;
+            };
+            indicator.width = 0;
+          };
+
+          statusbar = {
+            show = "in-mode";
+            widgets = [ "keypress" "url" "scroll" "history" "tabs" ];
+            padding = {
+              top = 4;
+              bottom = 4;
+              left = 8;
+              right = 8;
+            };
+          };
+
+          scrolling.smooth = true;
+
+          fonts = {
+            default_family = "JetBrainsMono Nerd Font";
+            default_size = "10pt";
+          };
+
+          colors = {
+            webpage.darkmode.enabled = true;
+            webpage.preferred_color_scheme = "dark";
+          };
+
+          hints = {
+            chars = "asdfghjklqwertyuiopzxcvbnm";
+            uppercase = true;
+            scatter = true;
+          };
+
+          completion = {
+            height = "40%";
+            scrollbar.width = 0;
+            show = "auto";
+          };
+
+          session.lazy_restore = true;
+
+          keyhint.delay = 500;
+
+          messages.timeout = 3000;
+
+          confirm_quit = [ "downloads" ];
+        };
+
+        keyBindings = {
+          normal = {
+            "<Ctrl+Shift+J>" = "tab-move +";
+            "<Ctrl+Shift+K>" = "tab-move -";
+            "xb" = "config-cycle statusbar.show always in-mode ;; config-cycle tabs.show always multiple";
+            "xh" = "config-cycle tabs.position left top";
+            "xp" = "spawn --userscript qute-pass";
+            "gd" = "scroll-page 0 0.5";
+            "gu" = "scroll-page 0 -0.5";
+          };
+          insert = {
+            "<Ctrl+e>" = "edit-text";
+          };
+        };
+
+        extraConfig = ''
+          config.bind("M", "hint links spawn mpv {hint-url}")
+          config.bind(";M", "hint --rapid links spawn mpv {hint-url}")
+          config.bind("d", "hint links spawn --detach mpv {hint-url}")
+        '';
+      };
+    };
+}
