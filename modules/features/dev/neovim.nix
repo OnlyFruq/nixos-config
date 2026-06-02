@@ -16,6 +16,10 @@
       home.packages = with pkgs; [
         ripgrep
         wl-clipboard
+        nixd
+        nixfmt
+        python3Packages.isort
+        python3Packages.black
       ];
 
       programs.nixvim = {
@@ -78,7 +82,6 @@
 
           conform-nvim = {
             enable = true;
-            autoInstall.enable = true;
             settings = {
               format_on_save = {
                 lsp_format = "fallback";
