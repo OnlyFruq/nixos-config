@@ -6,15 +6,9 @@ in
   flake.modules.homeManager.browser =
     { pkgs, config, lib, ... }:
     {
-      home.packages = with pkgs; [
-        hunspellDicts.en_US
-        hunspellDicts.de_DE
-      ];
-
-      home.sessionVariables.DICPATH = lib.makeSearchPath "share/hunspell" [
-        pkgs.hunspellDicts.en_US
-        pkgs.hunspellDicts.de_DE
-      ];
+      home.activation.installQutebrowserDictionaries = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run ${pkgs.python3}/bin/python3 ${pkgs.qutebrowser}/share/qutebrowser/scripts/dictcli.py install en-US de-DE
+      '';
 
       programs.qutebrowser = {
         enable = true;
@@ -53,7 +47,7 @@ in
           content = {
             autoplay = false;
             notifications.enabled = false;
-            javascript.clipboard = true;
+            javascript.clipboard = "access-paste";
             blocking = {
               enabled = true;
               method = "both";
@@ -94,24 +88,12 @@ in
             show = "multiple";
             title.format = "{audio}{index}: {current_title}";
             favicons.show = "never";
-            padding = {
-              top = 4;
-              bottom = 4;
-              left = 8;
-              right = 8;
-            };
             indicator.width = 0;
           };
 
           statusbar = {
             show = "in-mode";
             widgets = [ "keypress" "url" "scroll" "history" "tabs" ];
-            padding = {
-              top = 4;
-              bottom = 4;
-              left = 8;
-              right = 8;
-            };
           };
 
           scrolling.smooth = true;
