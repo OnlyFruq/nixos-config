@@ -128,7 +128,7 @@
           };
 
           layout = {
-            gaps = 0;
+            gaps = 1;
             center-focused-column = "never";
             always-center-single-column = true;
             empty-workspace-above-first = true;
@@ -150,7 +150,7 @@
               proportion = 0.5;
             };
             focus-ring = {
-              width = 2;
+              width = 1;
               active = {
                 color = "green";
               };
