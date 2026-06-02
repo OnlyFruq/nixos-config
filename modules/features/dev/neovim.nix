@@ -47,7 +47,6 @@
           which-key.enable = true;
           treesitter.enable = true;
           lualine.enable = true;
-          snacks.enable = true;
           noice = {
             enable = true;
             settings.lsp.override = {
