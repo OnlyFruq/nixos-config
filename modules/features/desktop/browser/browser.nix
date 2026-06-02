@@ -96,7 +96,7 @@ in
             widgets = [ "keypress" "url" "scroll" "history" "tabs" ];
           };
 
-          scrolling.smooth = true;
+          scrolling.smooth = false;
 
           fonts = {
             default_family = "JetBrainsMono Nerd Font";
@@ -110,7 +110,7 @@ in
 
           hints = {
             chars = "asdfghjklqwertyuiopzxcvbnm";
-            uppercase = true;
+            uppercase = false;
             scatter = true;
           };
 
@@ -135,9 +135,6 @@ in
             "<Ctrl+Shift+K>" = "tab-move -";
             "xb" = "config-cycle statusbar.show always in-mode ;; config-cycle tabs.show always multiple";
             "xh" = "config-cycle tabs.position left top";
-            "xp" = "spawn --userscript qute-pass";
-            "gd" = "scroll-page 0 0.5";
-            "gu" = "scroll-page 0 -0.5";
           };
           insert = {
             "<Ctrl+e>" = "edit-text";
