@@ -146,7 +146,6 @@ in
         extraConfig = ''
           config.bind("M", "hint links spawn mpv {hint-url}")
           config.bind(";M", "hint --rapid links spawn mpv {hint-url}")
-          config.bind("d", "hint links spawn --detach mpv {hint-url}")
         '';
       };
     };
