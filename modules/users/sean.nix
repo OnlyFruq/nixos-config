@@ -17,6 +17,7 @@
             "wheel"
             "libvirtd"
             "video"
+            "adbusers"
           ];
         };
 
