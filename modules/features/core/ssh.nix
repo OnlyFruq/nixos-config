@@ -1,22 +1,5 @@
-{ lib, ... }:
+{ ... }:
 {
-  flake.modules.nixos.ssh =
-    { config, ... }:
-    {
-      options.hostCfg.ssh-server.enable = lib.mkEnableOption "OpenSSH Server";
-
-      config = lib.mkIf config.hostCfg.ssh-server.enable {
-        services.openssh = {
-          enable = true;
-          settings = {
-            PasswordAuthentication = false;
-            KbdInteractiveAuthentication = false;
-            PermitRootLogin = "no";
-          };
-        };
-      };
-    };
-
   flake.modules.homeManager.ssh =
     { ... }:
     {
