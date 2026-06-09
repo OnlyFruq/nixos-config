@@ -58,7 +58,11 @@
             };
           };
 
-          cursor.hide-when-typing = true;
+          cursor = {
+            hide-when-typing = true;
+            theme = "everforest-cursors";
+            size = 24;
+          };
 
           layout = {
             gaps = 8;

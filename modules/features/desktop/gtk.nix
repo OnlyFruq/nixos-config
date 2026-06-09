@@ -10,13 +10,13 @@
           package = pkgs.everforest-gtk-theme;
         };
         cursorTheme = {
-          name = "Everforest-cursors";
+          name = "everforest-cursors";
           package = pkgs.everforest-cursors;
           size = 24;
         };
         gtk4.theme = config.gtk.theme;
       };
 
-      home.sessionVariables.XCURSOR_THEME = "Everforest-cursors";
+      home.sessionVariables.XCURSOR_THEME = "everforest-cursors";
     };
 }
