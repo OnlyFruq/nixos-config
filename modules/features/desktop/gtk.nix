@@ -6,7 +6,7 @@
       gtk = {
         enable = true;
         theme = {
-          name = "Everforest-Dark-BL";
+          name = "Everforest-Green-Dark";
           package = pkgs.everforest-gtk-theme;
         };
         cursorTheme = {
