@@ -52,8 +52,8 @@
           }
 
           window#waybar {
-            background: #000000;
-            color: #ffffff;
+            background: #2d353b;
+            color: #d3c6aa;
           }
 
           #clock,
@@ -64,16 +64,16 @@
           }
 
           #battery.charging {
-            color: #26a65b;
+            color: #a7c080;
           }
 
           #battery.critical:not(.charging) {
-            color: #f53c3c;
+            color: #e67e80;
           }
 
           #pulseaudio.sink.muted,
           #pulseaudio.mic.source-muted {
-            color: #999999;
+            color: #7a8478;
           }
         '';
       };

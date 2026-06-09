@@ -84,7 +84,7 @@
             };
             focus-ring = {
               width = 2;
-              active.color = "#2d6a4f";
+              active.color = "#a7c080";
               inactive.color = "#00000000";
             };
             shadow = {
