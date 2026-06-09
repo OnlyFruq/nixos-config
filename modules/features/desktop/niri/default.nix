@@ -61,8 +61,8 @@
           cursor.hide-when-typing = true;
 
           layout = {
-            gaps = 1;
-            center-focused-column = "never";
+            gaps = 8;
+            center-focused-column = "on-overflow";
             always-center-single-column = true;
             empty-workspace-above-first = true;
             preset-column-widths = [
@@ -83,13 +83,19 @@
               proportion = 0.5;
             };
             focus-ring = {
-              width = 1;
-              active = {
-                color = "green";
+              width = 2;
+              active.color = "#2d6a4f";
+              inactive.color = "#00000000";
+            };
+            shadow = {
+              enable = true;
+              softness = 20.0;
+              spread = 3.0;
+              offset = {
+                x = 0.0;
+                y = 4.0;
               };
-              inactive = {
-                color = "gray";
-              };
+              color = "#00000055";
             };
           };
 
@@ -121,9 +127,60 @@
 
           clipboard.disable-primary = true;
 
-          animations.enable = false;
+          animations = {
+            enable = true;
+            workspace-switch.kind = {
+              spring = {
+                damping-ratio = 1.0;
+                stiffness = 1000;
+                epsilon = 0.0001;
+              };
+            };
+            horizontal-view-movement.kind = {
+              spring = {
+                damping-ratio = 1.0;
+                stiffness = 800;
+                epsilon = 0.0001;
+              };
+            };
+            window-movement.kind = {
+              spring = {
+                damping-ratio = 1.0;
+                stiffness = 800;
+                epsilon = 0.0001;
+              };
+            };
+            window-open.kind = {
+              easing = {
+                duration-ms = 200;
+                curve = "ease-out-expo";
+              };
+            };
+            window-close.kind = {
+              easing = {
+                duration-ms = 150;
+                curve = "ease-out-quad";
+              };
+            };
+            window-resize.kind = {
+              spring = {
+                damping-ratio = 1.0;
+                stiffness = 800;
+                epsilon = 0.0001;
+              };
+            };
+          };
 
           window-rules = [
+            {
+              geometry-corner-radius = {
+                top-left = 12.0;
+                top-right = 12.0;
+                bottom-right = 12.0;
+                bottom-left = 12.0;
+              };
+              clip-to-geometry = true;
+            }
             {
               matches = [ { app-id = "^wiremix$"; } ];
               open-floating = true;
@@ -142,6 +199,7 @@
             }
           ];
         };
+
       };
     };
 }
