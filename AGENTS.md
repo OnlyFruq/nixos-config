@@ -1,6 +1,6 @@
 # AGENTS.md — NixOS Config
 
-Last updated: 2026-06-08
+Last updated: 2026-06-11
 
 Single-machine NixOS config using the **Dendritic Design** pattern with **flake-parts**.
 
@@ -34,7 +34,7 @@ modules/
 │   │   ├── browser.nix              ← qutebrowser
 │   │   ├── discord.nix              ← vesktop
 │   │   ├── filesharing.nix          ← localsend
-│   │   ├── lockscreen.nix           ← swaylock
+│   │   ├── lockscreen.nix           ← hyprlock
 │   │   ├── notifications.nix        ← mako
 │   │   ├── office-suite.nix         ← libreoffice
 │   │   ├── printing.nix             ← CUPS + SANE
@@ -64,7 +64,7 @@ Host (e.g. notebook.nix)
 
 - **Always on** (core): btop, fastfetch, git, shell, sops, ssh
 - **Always on** (dev): neovim (nixvim), claude-code
-- **Desktop** (imported via sean-desktop): niri, waybar, alacritty, qutebrowser, vesktop, localsend, libreoffice, swaylock, fuzzel, mako, printing, rdp-work
+- **Desktop** (imported via sean-desktop): niri, waybar, alacritty, qutebrowser, vesktop, localsend, libreoffice, hyprlock, fuzzel, mako, printing, rdp-work
 
 ## Feature Module Pattern
 
