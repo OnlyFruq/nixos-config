@@ -1,4 +1,3 @@
-- add DNS somewhere, wanna use cloudflare
 - fix tailscale module killing internet connectivity
 - move monitor output configs from niri/default.nix into notebook.nix (currently shared but 100% notebook-specific)
 - dont preserver tailscale folder, use sops to manage auth

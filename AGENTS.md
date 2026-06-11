@@ -23,7 +23,7 @@ modules/
 ├── users/
 │   └── sean.nix                     ← user module: NixOS account + HM imports (core + dev + desktop)
 ├── features/
-│   ├── core/                        ← always-on user features: btop, fastfetch, git, shell, sops, ssh
+│   ├── core/                        ← always-on user features: btop, fastfetch, git, shell, sops, ssh; system: dns (cloudflare DoT), tailscale
 │   ├── desktop/                     ← desktop features
 │   │   ├── niri/                    ← niri compositor split into sub-modules
 │   │   │   ├── default.nix          ← core: NixOS module, input, layout, animations, window/layer rules

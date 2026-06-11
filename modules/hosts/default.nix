@@ -1,4 +1,4 @@
-{ ... }:
+{ inputs, ... }:
 {
   flake.modules.nixos.hostDefault =
     {
@@ -8,6 +8,8 @@
       ...
     }:
     {
+      imports = with inputs.self.modules.nixos; [ dns ];
+
       options.hostCfg.audio.enable = lib.mkEnableOption "Audio Support";
       options.hostCfg.flakePath = lib.mkOption {
         type = lib.types.str;
