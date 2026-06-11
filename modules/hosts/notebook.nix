@@ -50,6 +50,15 @@
       services.power-profiles-daemon.enable = true;
       services.thermald.enable = true;
 
+      services.logind.settings.Login = {
+        HandleLidSwitch = "suspend-then-hibernate";
+        HandleLidSwitchExternalPower = "suspend-then-hibernate";
+      };
+
+      systemd.sleep.settings.Sleep = {
+        HibernateOnACPower = false;
+      };
+
       home-manager.users.sean.programs.niri.settings.outputs = {
         "eDP-1" = {
           position = {
