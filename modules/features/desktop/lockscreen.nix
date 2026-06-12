@@ -15,7 +15,7 @@
     }:
     let
       lockCmd = lib.getExe config.programs.hyprlock.package;
-      suspendCmd = "${pkgs.systemd}/bin/systemctl suspend-then-hibernate";
+      suspendCmd = "${pkgs.gnugrep}/bin/grep -qx Discharging /sys/class/power_supply/BAT*/status 2>/dev/null && ${pkgs.systemd}/bin/systemctl suspend-then-hibernate";
     in
     {
       programs.hyprlock = {
