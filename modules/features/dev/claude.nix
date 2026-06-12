@@ -17,6 +17,7 @@
 
         settings = {
           viewMode = "focus";
+          rendererMode = "fullscreen";
 
           hooks = {
             PostToolUse = [
