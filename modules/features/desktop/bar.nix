@@ -13,6 +13,7 @@
             margin = "0";
             modules-left = [ "clock" ];
             modules-right = [
+              "custom/perf"
               "pulseaudio#mic"
               "pulseaudio#sink"
               "battery"
@@ -41,6 +42,13 @@
               on-scroll-up = "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+ -l 1.0";
               on-scroll-down = "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-";
             };
+            "custom/perf" = {
+              exec = "perf-status";
+              signal = 9;
+              interval = "once";
+              return-type = "json";
+              on-click = "power-toggle";
+            };
           }
         ];
         style = ''
@@ -59,7 +67,8 @@
           #clock,
           #battery,
           #pulseaudio.sink,
-          #pulseaudio.mic {
+          #pulseaudio.mic,
+          #custom-perf {
             padding: 0 6px;
           }
 
@@ -74,6 +83,18 @@
           #pulseaudio.sink.muted,
           #pulseaudio.mic.source-muted {
             color: #7a8478;
+          }
+
+          #custom-perf.low {
+            color: #a7c080;
+          }
+
+          #custom-perf.med {
+            color: #dbbc7f;
+          }
+
+          #custom-perf.high {
+            color: #e67e80;
           }
         '';
       };
