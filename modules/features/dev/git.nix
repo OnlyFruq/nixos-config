@@ -1,9 +1,23 @@
 { ... }:
 {
   flake.modules.homeManager.git =
-    { config, ... }:
+    { config, lib, ... }:
     {
       programs.git.enable = true;
+
+      sops.secrets.github_token = { };
+
+      programs.gh = {
+        enable = true;
+        settings.git_protocol = "ssh";
+      };
+
+      home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        token=$(cat "${config.sops.secrets.github_token.path}")
+        mkdir -p "$HOME/.config/gh"
+        printf 'github.com:\n    oauth_token: %s\n    git_protocol: ssh\n    user: sean-imus\n' "$token" \
+          | install -m 600 /dev/stdin "$HOME/.config/gh/hosts.yml"
+      '';
 
       home.shellAliases = {
         lg = "lazygit";
