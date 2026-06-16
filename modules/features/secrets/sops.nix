@@ -31,7 +31,7 @@
 
       sops = {
         defaultSopsFile = ./secrets.yaml;
-        age.keyFile = "/home/sean/.ssh/sops_age_key";
+        age.keyFile = "/persist/home/sean/.ssh/sops_age_key";
       };
 
       environment.systemPackages = [ pkgs.sops ];

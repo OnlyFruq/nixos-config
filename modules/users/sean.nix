@@ -1,13 +1,19 @@
 { inputs, ... }:
 {
   flake.modules.nixos.sean =
-    { pkgs, ... }:
+    { pkgs, config, ... }:
     {
+      imports = [ inputs.self.modules.nixos.sops ];
+
       config = {
+        sops.secrets.sean_hashed_password = {
+          neededForUsers = true;
+        };
+
         users.users.sean = {
           isNormalUser = true;
           description = "Sean Tietz";
-          hashedPassword = "$y$j9T$JRaDh99DoyOB47QI7Imjg0$9lMQ/jkdQpE3UXC338HsTqbhiI4XuZLK9iEy0yxTXYC";
+          hashedPasswordFile = config.sops.secrets.sean_hashed_password.path;
           shell = pkgs.zsh;
           extraGroups = [
             "networkmanager"
