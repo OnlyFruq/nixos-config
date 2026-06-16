@@ -157,7 +157,7 @@ SSH private key and other secrets managed via **sops-nix** (HM module, `modules/
 
 ### Architecture
 
-- **Age key** lives at `~/.ssh/sops_age_key` (preserved via impermanence as a single file). Only this one file persists — sops provisions everything else.
+- **Age key** lives at `~/.config/sops/age/keys.txt` (preserved via impermanence as a single file). Only this one file persists — sops provisions everything else.
 - **Encrypted secrets** are in `modules/features/secrets/secrets.yaml`, committed to git with `sops` metadata.
 - Decryption uses the age key on-disk at activation time. No machine/host keys involved.
 
@@ -187,11 +187,11 @@ Edit the value, save — sops re-encrypts automatically. Rebuild to deploy.
 
 If the age key is lost (e.g. fresh install), generate a new one:
 ```bash
-nix shell nixpkgs#age -c age-keygen -o ~/.ssh/sops_age_key
+nix shell nixpkgs#age -c age-keygen -o ~/.config/sops/age/keys.txt
 ```
 Get the public key, update `.sops.yaml`, then re-encrypt `secrets.yaml`:
 ```bash
-sops --rotate --age $(nix shell nixpkgs#age -c age-keygen -y ~/.ssh/sops_age_key) \
+sops --rotate --age $(nix shell nixpkgs#age -c age-keygen -y ~/.config/sops/age/keys.txt) \
   modules/features/secrets/secrets.yaml
 ```
 Commit, rebuild.
@@ -202,8 +202,8 @@ The age key lives on a USB drive. See the **Fresh Install** section — copy it 
 
 If the age key is **lost permanently**, generate a new one:
 ```bash
-age-keygen -o ~/.ssh/sops_age_key
-age-keygen -y ~/.ssh/sops_age_key   # prints public key → update the recipient in secrets.yaml
+age-keygen -o ~/.config/sops/age/keys.txt
+age-keygen -y ~/.config/sops/age/keys.txt   # prints public key → update the recipient in secrets.yaml
 nix run nixpkgs#sops -- --rotate --age <new-public-key> modules/features/secrets/secrets.yaml
 ```
 Commit the re-encrypted `secrets.yaml`, then follow the fresh install steps.
@@ -255,7 +255,7 @@ Disk (NVMe by-id)
 | File | Purpose |
 |------|---------|
 | `modules/features/storage/disko.nix` | GPT + LUKS + nested GPT (swap + BTRFS subvols) + tmpfs root; parameterized `diskoConfigDevice` option |
-| `modules/features/storage/persistence.nix` | Preservation config: /etc/NetworkManager/system-connections, /var/lib/systemd/timers, /var/lib/libvirt/, /etc/machine-id, user ~/.ssh/sops_age_key, ~/.local/state/wireplumber, ~/persist |
+| `modules/features/storage/persistence.nix` | Preservation config: /etc/NetworkManager/system-connections, /var/lib/systemd/timers, /var/lib/libvirt/, /etc/machine-id, user ~/.config/sops/age/keys.txt, ~/.local/state/wireplumber, ~/persist |
 | `modules/hosts/notebook.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + persistence |
 | `modules/hosts/vm.nix` | Sets `diskoConfigDevice` to virtio path, imports disko + persistence |
 
@@ -275,9 +275,9 @@ lsblk   # find your USB device, e.g. /dev/sda1
 mkdir -p /mnt/usb
 mount /dev/sda1 /mnt/usb   # adjust device name
 mkdir -p /mnt/persist/home/sean/.ssh
-cp /mnt/usb/sops_age_key /mnt/persist/home/sean/.ssh/sops_age_key
+cp /mnt/usb/keys.txt /mnt/persist/home/sean/.ssh/keys.txt
 chmod 700 /mnt/persist/home/sean/.ssh
-chmod 600 /mnt/persist/home/sean/.ssh/sops_age_key
+chmod 600 /mnt/persist/home/sean/.ssh/keys.txt
 umount /mnt/usb
 
 # 3. Install (builds into /mnt/nix/store on the target disk)
@@ -286,7 +286,7 @@ sudo nixos-install --no-channel-copy --no-root-password --flake github:sean-imus
 
 **Install flow:**
 1. `disko` prompts for LUKS password, partitions, formats, and mounts everything under `/mnt`
-2. Age key copied from USB to `/mnt/persist/home/sean/.ssh/sops_age_key` — sops-nix reads this during activation to decrypt the password hash (via `neededForUsers`). Without it the install fails.
+2. Age key copied from USB to `/mnt/persist/home/sean/.ssh/keys.txt` — sops-nix reads this during activation to decrypt the password hash (via `neededForUsers`). Without it the install fails.
 3. `nixos-install` builds the system closure directly into `/mnt/nix/store` and installs the bootloader
 
 ### Post-Install Workflow

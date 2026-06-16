@@ -34,7 +34,7 @@ nix shell nixpkgs#age             # then: age-keygen ...
 ## Secrets (sops)
 
 All secrets live in `modules/features/secrets/secrets.yaml` (encrypted, committed to git).
-Age key: `~/.ssh/sops_age_key` (preserved from `/persist`, backed up on USB).
+Age key: `~/.config/sops/age/keys.txt` (preserved from `/persist`, backed up on USB).
 
 ### Edit the secrets file
 
@@ -69,8 +69,8 @@ nix run nixpkgs#sops -- --decrypt --extract '["secret_name"]' \
 ### Rotate the age key (key lost/compromised)
 
 ```bash
-nix shell nixpkgs#age -c age-keygen -o ~/.ssh/sops_age_key
-age-keygen -y ~/.ssh/sops_age_key   # → new public key
+nix shell nixpkgs#age -c age-keygen -o ~/.config/sops/age/keys.txt
+age-keygen -y ~/.config/sops/age/keys.txt   # → new public key
 nix run nixpkgs#sops -- --rotate --age <new-public-key> \
   modules/features/secrets/secrets.yaml
 # commit re-encrypted secrets.yaml, copy key to USB, rbs
@@ -139,7 +139,7 @@ nix run nixpkgs#sops -- --rotate --age <new-public-key> \
 **Persists** (on `/persist`, LUKS-encrypted BTRFS):
 - `/etc/NetworkManager/system-connections` — WiFi passwords
 - `/etc/machine-id` — stable machine identity
-- `~/.ssh/sops_age_key` — age decryption key
+- `~/.config/sops/age/keys.txt` — age decryption key
 - `~/.local/state/wireplumber` — audio device preferences
 - `~/persist/` — your personal files (bind-mounted from `/persist/home/sean/persist`)
 
@@ -170,8 +170,8 @@ sudo disko --mode disko --flake github:sean-imus/nixos-config#notebook
 # 2. Copy age key from USB (CRITICAL — without this, boot fails)
 mount /dev/sda1 /mnt/usb
 mkdir -p /mnt/persist/home/sean/.ssh
-cp /mnt/usb/sops_age_key /mnt/persist/home/sean/.ssh/sops_age_key
-chmod 700 /mnt/persist/home/sean/.ssh && chmod 600 /mnt/persist/home/sean/.ssh/sops_age_key
+cp /mnt/usb/keys.txt /mnt/persist/home/sean/.ssh/keys.txt
+chmod 700 /mnt/persist/home/sean/.ssh && chmod 600 /mnt/persist/home/sean/.ssh/keys.txt
 umount /mnt/usb
 
 # 3. Install

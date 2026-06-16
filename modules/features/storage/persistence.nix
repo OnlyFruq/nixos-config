@@ -28,7 +28,7 @@
           users.sean = {
             files = [
               {
-                file = ".ssh/sops_age_key";
+                file = ".config/sops/age/keys.txt";
                 configureParent = true;
               }
             ];
