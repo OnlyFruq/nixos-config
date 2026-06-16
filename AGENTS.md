@@ -31,7 +31,7 @@ modules/
 │   │   │   └── _utilities.nix       ← playerctld, hidden desktop entries, home packages + shell scripts
 │   │   ├── application-launcher.nix ← fuzzel
 │   │   ├── bar.nix                  ← waybar
-│   │   ├── browser.nix              ← qutebrowser
+│   │   ├── browser/browser.nix      ← qutebrowser
 │   │   ├── discord.nix              ← vesktop
 │   │   ├── filesharing.nix          ← localsend
 │   │   ├── lockscreen.nix           ← hyprlock
@@ -82,14 +82,12 @@ Features must be **user-independent** — no hardcoded usernames, bookmarks, etc
 Exception: `rdp-work.nix` may contain user-specific data.
 User-specific data (git identity, bookmarks, extra packages) goes in `users/<user>.nix`.
 
-## User Template Pattern
+## User Modules
 
-`modules/users/default.nix` provides a reusable user template with two modules:
-
-- **`flake.modules.nixos.userDefault`** — NixOS-side: placeholder for future common user NixOS config.
-- **`flake.modules.homeManager.default`** — HM-side: sets `home.stateVersion` as a project-wide default.
-
-Individual user configs (e.g., `users/sean.nix`) import the template and handle all user-specific config directly — account creation, features, git identity, packages.
+There is no shared user template. Each user is a self-contained pair:
+`modules/users/sean.nix` (NixOS account + core/dev HM imports, sets `home.stateVersion`
+inline) and `modules/users/sean-desktop.nix` (layers the desktop HM modules on top).
+Hosts import `sean` or `sean-desktop` directly.
 
 ## Commits
 
