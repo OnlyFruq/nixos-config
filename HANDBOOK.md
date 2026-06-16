@@ -169,9 +169,9 @@ sudo disko --mode disko --flake github:sean-imus/nixos-config#notebook
 
 # 2. Copy age key from USB (CRITICAL — without this, boot fails)
 mount /dev/sda1 /mnt/usb
-mkdir -p /mnt/persist/home/sean/.ssh
-cp /mnt/usb/keys.txt /mnt/persist/home/sean/.ssh/keys.txt
-chmod 700 /mnt/persist/home/sean/.ssh && chmod 600 /mnt/persist/home/sean/.ssh/keys.txt
+mkdir -p /mnt/persist/home/sean/.config/sops/age
+cp /mnt/usb/keys.txt /mnt/persist/home/sean/.config/sops/age/keys.txt
+chmod 600 /mnt/persist/home/sean/.config/sops/age/keys.txt
 umount /mnt/usb
 
 # 3. Install

@@ -274,10 +274,9 @@ sudo disko --mode disko --flake github:sean-imus/nixos-config#[notebook/vm]
 lsblk   # find your USB device, e.g. /dev/sda1
 mkdir -p /mnt/usb
 mount /dev/sda1 /mnt/usb   # adjust device name
-mkdir -p /mnt/persist/home/sean/.ssh
-cp /mnt/usb/keys.txt /mnt/persist/home/sean/.ssh/keys.txt
-chmod 700 /mnt/persist/home/sean/.ssh
-chmod 600 /mnt/persist/home/sean/.ssh/keys.txt
+mkdir -p /mnt/persist/home/sean/.config/sops/age
+cp /mnt/usb/keys.txt /mnt/persist/home/sean/.config/sops/age/keys.txt
+chmod 600 /mnt/persist/home/sean/.config/sops/age/keys.txt
 umount /mnt/usb
 
 # 3. Install (builds into /mnt/nix/store on the target disk)
@@ -286,7 +285,7 @@ sudo nixos-install --no-channel-copy --no-root-password --flake github:sean-imus
 
 **Install flow:**
 1. `disko` prompts for LUKS password, partitions, formats, and mounts everything under `/mnt`
-2. Age key copied from USB to `/mnt/persist/home/sean/.ssh/keys.txt` — sops-nix reads this during activation to decrypt the password hash (via `neededForUsers`). Without it the install fails.
+2. Age key copied from USB to `/mnt/persist/home/sean/.config/sops/age/keys.txt` — sops-nix reads this during activation to decrypt the password hash (via `neededForUsers`). Without it the install fails.
 3. `nixos-install` builds the system closure directly into `/mnt/nix/store` and installs the bootloader
 
 ### Post-Install Workflow
