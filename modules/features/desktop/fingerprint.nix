@@ -19,6 +19,7 @@
 
       security.pam.services.sudo.rules.auth.fprintd.settings.timeout = 3;
 
+      security.pam.services.login.fprintAuth = false;
       security.pam.services.hyprlock.fprintAuth = false;
 
       home-manager.users.sean.programs.hyprlock.settings.auth.fingerprint = {

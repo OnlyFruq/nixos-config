@@ -13,10 +13,13 @@
       };
 
       home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        token=$(cat "${config.sops.secrets.github_token.path}")
-        mkdir -p "$HOME/.config/gh"
-        printf 'github.com:\n    oauth_token: %s\n    git_protocol: ssh\n    user: sean-imus\n' "$token" \
-          | install -m 600 /dev/stdin "$HOME/.config/gh/hosts.yml"
+        tokenFile="${config.sops.secrets.github_token.path}"
+        if [ -f "$tokenFile" ]; then
+          token=$(cat "$tokenFile")
+          mkdir -p "$HOME/.config/gh"
+          printf 'github.com:\n    oauth_token: %s\n    git_protocol: ssh\n    user: sean-imus\n' "$token" \
+            | install -m 600 /dev/stdin "$HOME/.config/gh/hosts.yml"
+        fi
       '';
 
       home.shellAliases = {
