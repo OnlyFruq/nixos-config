@@ -13,10 +13,15 @@
       };
 
       home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" "sops-nix" ] ''
-        token=$(cat "${config.sops.secrets.github_token.path}")
-        mkdir -p "$HOME/.config/gh"
-        printf 'github.com:\n    oauth_token: %s\n    git_protocol: ssh\n    user: sean-imus\n' "$token" \
-          | install -m 600 /dev/stdin "$HOME/.config/gh/hosts.yml"
+        # sops-nix activation only restarts the service; wait for it to finish writing secrets
+        systemctl --user start --wait sops-nix.service 2>/dev/null || true
+        token_file="${config.sops.secrets.github_token.path}"
+        if [[ -f "$token_file" ]]; then
+          token=$(cat "$token_file")
+          mkdir -p "$HOME/.config/gh"
+          printf 'github.com:\n    oauth_token: %s\n    git_protocol: ssh\n    user: sean-imus\n' "$token" \
+            | install -m 600 /dev/stdin "$HOME/.config/gh/hosts.yml"
+        fi
       '';
 
       home.shellAliases = {
