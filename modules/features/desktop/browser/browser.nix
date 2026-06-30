@@ -40,6 +40,7 @@
           DisableTelemetry = true;
           DisableFirefoxStudies = true;
           DisablePocket = true;
+          HomepageIsNewTab = true;
           DefaultSearchService = "DuckDuckGo";
           UserMessaging = {
             ExtensionRecommendations = false;
