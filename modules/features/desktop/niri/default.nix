@@ -110,28 +110,6 @@
             };
           };
 
-          spawn-at-startup = [
-            { argv = [ "waybar" ]; }
-            {
-              argv = [
-                "wl-paste"
-                "--watch"
-                "cliphist"
-                "store"
-              ];
-            }
-            {
-              argv = [
-                "wl-paste"
-                "--type"
-                "image/png"
-                "--watch"
-                "cliphist"
-                "store"
-              ];
-            }
-          ];
-
           hotkey-overlay.skip-at-startup = true;
           prefer-no-csd = true;
           screenshot-path = "~/Screenshots/%Y-%m-%d %H-%M-%S.png";
@@ -191,14 +169,6 @@
                 bottom-left = 12.0;
               };
               clip-to-geometry = true;
-            }
-            {
-              matches = [ { app-id = "^wiremix$"; } ];
-              open-floating = true;
-            }
-            {
-              matches = [ { app-id = "^bluetui$"; } ];
-              open-floating = true;
             }
             {
               matches = [ { app-id = "^netpala$"; } ];

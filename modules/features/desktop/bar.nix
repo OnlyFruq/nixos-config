@@ -3,6 +3,8 @@
   flake.modules.homeManager.bar =
     { ... }:
     {
+      programs.niri.settings.spawn-at-startup = [ { argv = [ "waybar" ]; } ];
+
       programs.niri.settings.binds = {
         "Mod+Shift+Space".action.spawn = [
           "sh"

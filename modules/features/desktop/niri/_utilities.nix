@@ -26,6 +26,38 @@
     "Mod+Ctrl+Shift+C".action.spawn = "screencap";
   };
 
+  programs.niri.settings.window-rules = [
+    {
+      matches = [ { app-id = "^wiremix$"; } ];
+      open-floating = true;
+    }
+    {
+      matches = [ { app-id = "^bluetui$"; } ];
+      open-floating = true;
+    }
+  ];
+
+  programs.niri.settings.spawn-at-startup = [
+    {
+      argv = [
+        "wl-paste"
+        "--watch"
+        "cliphist"
+        "store"
+      ];
+    }
+    {
+      argv = [
+        "wl-paste"
+        "--type"
+        "image/png"
+        "--watch"
+        "cliphist"
+        "store"
+      ];
+    }
+  ];
+
   services.playerctld.enable = true;
 
   programs.mpv = {
@@ -67,7 +99,6 @@
     brightnessctl
     wf-recorder
     slurp
-    libnotify
     wl-clipboard
     cliphist
     (pkgs.writeShellScriptBin "perf-status" ''
