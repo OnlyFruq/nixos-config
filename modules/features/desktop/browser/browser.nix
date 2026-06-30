@@ -40,9 +40,11 @@
           DisableTelemetry = true;
           DisableFirefoxStudies = true;
           DisablePocket = true;
-          Homepage.URL = startPage;
-          HomepageIsNewTab = true;
           DefaultSearchService = "DuckDuckGo";
+          "3rdparty".Extensions."newtaboverride@agenedia.com" = {
+            type = "custom_url";
+            url = startPage;
+          };
           UserMessaging = {
             ExtensionRecommendations = false;
             FeatureRecommendations = false;
@@ -96,6 +98,7 @@
             packages = [
               inputs.nix-firefox-addons.addons.${sys}.ublock-origin
               inputs.nix-firefox-addons.addons.${sys}.vimium-ff
+              inputs.nix-firefox-addons.addons.${sys}.new-tab-override
             ];
           };
 
