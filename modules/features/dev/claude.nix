@@ -27,7 +27,7 @@
                   {
                     type = "command";
                     command = ''
-                      jq -r '.tool_input.file_path // .tool_response.filePath' | {
+                      ${pkgs.jq}/bin/jq -r '.tool_input.file_path // .tool_response.filePath' | {
                         read -r f
                         case "$f" in
                           *.nix) ${pkgs.nixfmt}/bin/nixfmt "$f" ;;
@@ -58,14 +58,5 @@
           };
         };
       };
-
-      home.packages = with pkgs; [
-        mcp-nixos
-        pyright
-        nixd
-        nixfmt
-        python3Packages.black
-        jq
-      ];
     };
 }

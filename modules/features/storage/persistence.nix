@@ -32,11 +32,16 @@
                 file = ".config/sops/age/keys.txt";
                 configureParent = true;
               }
+              {
+                file = ".claude/.credentials.json";
+                configureParent = true;
+              }
             ];
             directories = [
               ".local/state/wireplumber"
               "persist"
-              ".claude"
+              { directory = ".claude/sessions"; }
+              { directory = ".claude/projects"; }
             ];
           };
         };
