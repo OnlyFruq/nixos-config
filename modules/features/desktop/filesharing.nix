@@ -11,5 +11,12 @@
     { pkgs, ... }:
     {
       home.packages = [ pkgs.localsend ];
+
+      programs.niri.settings.window-rules = [
+        {
+          matches = [ { app-id = "^localsend_app$"; } ];
+          open-floating = true;
+        }
+      ];
     };
 }

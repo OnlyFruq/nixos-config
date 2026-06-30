@@ -204,10 +204,6 @@
               matches = [ { app-id = "^netpala$"; } ];
               open-floating = true;
             }
-            {
-              matches = [ { app-id = "^localsend_app$"; } ];
-              open-floating = true;
-            }
           ];
         };
 
