@@ -21,7 +21,6 @@
       games
       gtk
       lockscreen
-      notifications
       niri
       office-suite
       printing
