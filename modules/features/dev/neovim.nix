@@ -40,12 +40,18 @@
         };
 
         plugins = {
-          web-devicons.enable = true;
           gitsigns.enable = true;
           lazygit.enable = true;
           nvim-autopairs.enable = true;
-          which-key.enable = true;
-          treesitter.enable = true;
+          treesitter = {
+            enable = true;
+            grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+              nix
+              python
+              lua
+              bash
+            ];
+          };
           lualine.enable = true;
           noice = {
             enable = true;
