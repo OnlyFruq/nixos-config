@@ -6,7 +6,6 @@
       imports = with inputs.self.modules.nixos; [
         hostDefault
         disko
-        fingerprint
         persistence
         qemu
         sean-desktop
