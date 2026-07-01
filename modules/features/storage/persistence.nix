@@ -36,10 +36,7 @@
                 file = ".claude/.credentials.json";
                 configureParent = true;
               }
-              {
-                file = ".claude.json";
-                configureParent = true;
-              }
+              { file = ".claude.json"; }
             ];
             directories = [
               ".local/state/wireplumber"
