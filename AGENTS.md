@@ -221,6 +221,32 @@ nix run nixpkgs#sops -- --rotate --age <new-public-key> modules/features/secrets
 ```
 Commit the re-encrypted `secrets.yaml`, then follow the fresh install steps.
 
+### Moving a persisted secret's path (migration gotcha)
+
+Changing where a **persisted** secret lives (e.g. the age key path) is a **two-step live
+migration**, and the switch that introduces it can fail mid-activation:
+
+1. **Place the file at the new `/persist` path first**, before rebuilding — the NixOS-level
+   sops reads the age key directly from `/persist/...` at activation to decrypt
+   `neededForUsers` secrets (the login password). If it's missing there, activation fails.
+   ```bash
+   sudo cp /persist/home/sean/.config/sops/age/keys.txt /persist/home/sean/.keys/age.txt
+   sudo chown sean:users /persist/home/sean/.keys{,/age.txt}
+   sudo chmod 700 /persist/home/sean/.keys && sudo chmod 600 /persist/home/sean/.keys/age.txt
+   ```
+2. **Expect the first `rbs` to fail `home-manager-sean.service`.** HM restarts the user
+   `sops-nix.service` *before* the new systemd user unit is reloaded, so it runs the **stale**
+   unit — which still points at the old key path you just unmounted → decryption fails.
+   Recover with either:
+   ```bash
+   systemctl --user daemon-reload && systemctl --user restart sops-nix.service && rbs
+   ```
+   or simply **reboot** (on boot, units load fresh and the mount is ordered first).
+3. **Keep the old key on `/persist` until a clean reboot confirms login**, then remove it —
+   previous boot generations still reference the old path, so it's your rollback net.
+
+Not a recurring issue: once migrated, ordinary switches don't move the key.
+
 ## Declarative WiFi (NM ensureProfiles)
 
 Wi-Fi profiles are declared in `modules/features/desktop/wifi.nix` via `networking.networkmanager.ensureProfiles`. PSKs come from sops secrets injected by `nm-file-secret-agent` at connect time.
