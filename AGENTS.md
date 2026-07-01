@@ -82,12 +82,24 @@ Features must be **user-independent** — no hardcoded usernames, bookmarks, etc
 Exception: `rdp-work.nix` may contain user-specific data.
 User-specific data (git identity, bookmarks, extra packages) goes in `users/<user>.nix`.
 
+**Modules own their own declarations.** A feature declares everything its capability
+requires (persisted paths, secret paths, group memberships) *in the module that provides
+the capability*, never in a distant catch-all. Cross-cutting needs use the **bridge pattern**:
+the feature writes a *neutral, user-agnostic request* into an option (`persist.files`,
+`userCfg.extraGroups`), and a small mechanism module resolves it per-user by `mapAttrs`-ing
+over `config.home-manager.users` — so **no feature ever names a user**, and a path/group only
+lands on hosts that actually import the feature. Consumers **use what a provider exposes**
+(e.g. `config.sops.secrets.<name>.path`) rather than restating a literal. See *Preservation
+ownership* and *Group ownership* for the two live instances.
+
 ## User Modules
 
 There is no shared user template. Each user is a self-contained pair:
 `modules/users/sean.nix` (NixOS account + core/dev HM imports, sets `home.stateVersion`
 inline) and `modules/users/sean-desktop.nix` (layers the desktop HM modules on top).
 Hosts import `sean` or `sean-desktop` directly.
+`modules/users/default.nix` is not a user — it holds the user-agnostic **group bridge**
+(`user-groups`, see *Group ownership*) that every host imports.
 
 ## Keybinding Convention
 
@@ -170,9 +182,13 @@ SSH private key and other secrets managed via **sops-nix** (HM module, `modules/
 ### Architecture
 
 - **Age key** lives at `~/.keys/age.txt` — the one secret that must exist before anything else can be decrypted. It's the only key that persists (declared via `persist.files` in `sops.nix`).
-- **sops-generated secrets** (e.g. the SSH identity) are written under `~/.keys/generated_keys/`. These are **not** persisted — sops-nix regenerates them from `secrets.yaml` on every activation.
-- **Encrypted secrets** are in `modules/features/secrets/secrets.yaml`, committed to git with `sops` metadata.
+- **Two sops surfaces, one key.** The HM module reads the key via `~/${ageKeyRelPath}`; the NixOS module reads the raw `/persist/home/<user>/${ageKeyRelPath}` because it decrypts `sean_hashed_password` at the `neededForUsers` stage, which runs *before* the home bind-mount exists. Both must resolve to the same physical file or a live key migration is triggered.
+- **Single source of truth for the key path.** `sops.nix` defines `ageKeyRelPath` once in a `let` and every consumer (session var, `persist.files`, HM `age.keyFile`, derived NixOS `age.keyFile`) references it — a rename touches one line.
+- **User-independent path.** The NixOS `age.keyFile` derives the username from `builtins.attrNames config.home-manager.users` (forcing only attr *names* is cheap and free of the sops eval cycle), so no feature hardcodes a user. This is the same "never name a user" rule as the persist/group bridges.
+- **sops-generated secrets** (e.g. the SSH identity) are written under `~/.keys/generated_keys/`. These are **not** persisted — sops-nix regenerates them from `secrets.yaml` on every activation. Consumers reference the **provider's** path (e.g. git's `IdentityFile = config.sops.secrets.sean_ssh_id_ed25519.path`), never a restated literal.
+- **Encrypted secrets** are in `modules/features/secrets/secrets.yaml`, committed to git with `sops` metadata. The `.sops.yaml` creation rule is anchored (`(^|/)secrets\.yaml$`) so it matches regardless of the directory `sops` is invoked from.
 - Decryption uses the age key on-disk at activation time. No machine/host keys involved.
+- A module that consumes `sops.secrets.*` must **import the sops module itself** (`imports = [ inputs.self.modules.nixos.sops ];`) rather than relying on another always-on module having pulled it in.
 
 ### Adding a new secret
 
@@ -417,7 +433,7 @@ declares a *neutral, user-agnostic request* in the module that owns it, a NixOS-
 resolves that request *per-user*, and **no feature ever names a user** — the username comes
 from the HM attr key.
 
-`modules/features/core/user-groups.nix` is the group analog of the persist bridge. It:
+`modules/users/default.nix` is the group analog of the persist bridge. It:
 1. injects a per-user `userCfg.extraGroups` option into every HM user via
    `home-manager.sharedModules`, and
 2. maps each HM user's request onto their system account:
@@ -452,7 +468,8 @@ A second user gets identical capabilities purely by importing the same HM featur
 | `modules/features/storage/disko.nix` | GPT + LUKS + nested GPT (swap + BTRFS subvols) + tmpfs root; parameterized `diskoConfigDevice` option |
 | `modules/features/storage/persistence.nix` | Preservation *mechanism* + global system state (/etc/machine-id, /var/lib/systemd/timers) + the persist bridge (injects `persist.*`, defaults every user to ~/persist, maps all HM users into preservation) |
 | `modules/features/virtualization/qemu.nix` | Preserves /var/lib/libvirt/ (VM storage/networks) — owned by the feature that needs it |
-| `modules/features/secrets/sops.nix` | Declares `persist.files` for the age key ~/.keys/age.txt |
+| `modules/features/secrets/sops.nix` | Declares `persist.files` for the age key ~/.keys/age.txt; single-source `ageKeyRelPath`; derives the user for the NixOS key path |
+| `modules/users/default.nix` | The group bridge: injects per-user `userCfg.extraGroups`, maps it onto each user's system account (filtered by existing groups). Imported by every host |
 | `modules/features/dev/claude.nix` | Declares `persist.*` for ~/.claude/* (creds, sessions, projects) |
 | `modules/hosts/notebook.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + persistence |
 | `modules/hosts/vm.nix` | Sets `diskoConfigDevice` to virtio path, imports disko + persistence |

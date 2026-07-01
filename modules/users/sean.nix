@@ -16,8 +16,6 @@
           linger = true;
           hashedPasswordFile = config.sops.secrets.sean_hashed_password.path;
           shell = pkgs.zsh;
-          # wheel is genuine user identity; feature groups resolve via the
-          # user-groups bridge from the HM features this user imports.
           extraGroups = [ "wheel" ];
         };
 
