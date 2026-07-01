@@ -10,6 +10,10 @@
         };
       };
 
+      preservation.preserveAt."/persist".directories = [
+        "/var/lib/libvirt/"
+      ];
+
       programs.virt-manager = {
         enable = true;
       };

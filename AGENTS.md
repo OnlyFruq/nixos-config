@@ -350,12 +350,41 @@ Disk (NVMe by-id)
 - **Preservation** (nix-community/preservation) bind-mounts selected paths from `/persist` into the tmpfs root (system dirs) and home (user dirs)
 - **No `hardware-configuration.nix`** — disko generates all `fileSystems`, `boot.initrd.luks`, and mount config. You never need UUIDs or filesystem entries.
 
+### Preservation ownership
+
+`persistence.nix` provides the *mechanism* only — it enables preservation and holds
+globally-owned system state (machine-id, systemd timers). It must **not** know about
+individual features or users.
+
+Everything else declares its own persistence in the module that owns it, extending the
+merged `preservation.preserveAt."/persist"` option:
+
+- **System state** → the feature module that owns it. Example: `qemu.nix` preserves
+  `/var/lib/libvirt/`. Because that path is declared in `qemu.nix`, it is only preserved
+  on hosts that actually import qemu (notebook, not vm) — no dead config.
+- **Per-user state** (`users.<name>.*`) → that user's module (`users/sean.nix`). This is
+  the single place that legitimately knows the username, matching the "user-independent
+  features" rule above. The module only *sets* `preservation.preserveAt.*`; it does not
+  import `persistence` itself — the host supplies the mechanism (both hosts import it),
+  and importing it here too would apply the module twice (the anonymous-module reference
+  is not deduped, so machine-id/timers would double up).
+
+```nix
+# in a feature module — system path:
+preservation.preserveAt."/persist".directories = [ "/var/lib/foo" ];
+
+# in users/sean.nix — per-user path:
+preservation.preserveAt."/persist".users.sean.files = [ { file = ".config/foo"; } ];
+```
+
 ### Relevant Files
 
 | File | Purpose |
 |------|---------|
 | `modules/features/storage/disko.nix` | GPT + LUKS + nested GPT (swap + BTRFS subvols) + tmpfs root; parameterized `diskoConfigDevice` option |
-| `modules/features/storage/persistence.nix` | Preservation config: /var/lib/systemd/timers, /var/lib/libvirt/, /etc/machine-id, user ~/.config/sops/age/keys.txt, ~/.local/state/wireplumber, ~/persist |
+| `modules/features/storage/persistence.nix` | Preservation *mechanism* + global system state only: /etc/machine-id, /var/lib/systemd/timers. Feature/user paths are declared by their owning module (see "Preservation ownership" below) |
+| `modules/features/virtualization/qemu.nix` | Preserves /var/lib/libvirt/ (VM storage/networks) — owned by the feature that needs it |
+| `modules/users/sean.nix` | Preserves sean's home state: ~/.config/sops/age/keys.txt, ~/.claude/* (creds, sessions, projects), ~/.local/state/wireplumber, ~/persist |
 | `modules/hosts/notebook.nix` | Sets `diskoConfigDevice` to by-id NVMe path, imports disko + persistence |
 | `modules/hosts/vm.nix` | Sets `diskoConfigDevice` to virtio path, imports disko + persistence |
 

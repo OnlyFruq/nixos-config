@@ -18,7 +18,6 @@
         preserveAt."/persist" = {
           directories = [
             "/var/lib/systemd/timers"
-            "/var/lib/libvirt/" # Needed for VM Storage, custom Networks and such, ugly but necessery
           ];
           files = [
             {
@@ -26,25 +25,6 @@
               inInitrd = true;
             }
           ];
-          users.sean = {
-            files = [
-              {
-                file = ".config/sops/age/keys.txt";
-                configureParent = true;
-              }
-              {
-                file = ".claude/.credentials.json";
-                configureParent = true;
-              }
-              { file = ".claude.json"; }
-            ];
-            directories = [
-              ".local/state/wireplumber"
-              "persist"
-              { directory = ".claude/sessions"; }
-              { directory = ".claude/projects"; }
-            ];
-          };
         };
       };
     };
