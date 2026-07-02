@@ -4,6 +4,7 @@
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
     };
     netpala = {
       url = "github:joel-sgc/netpala";
