@@ -25,10 +25,7 @@
           inherit ssid;
         };
         wifi-security = {
-          key-mgmt = "wpa-psk"; # negotiates up to WPA3/SAE, not locked to WPA2
-          # psk-flags = 1 (agent-owned) is mandatory: it tells NM to fetch the PSK
-          # from nm-file-secret-agent. Without it NM expects an inline PSK, finds
-          # none, and silently connects with no password.
+          key-mgmt = "wpa-psk";
           psk-flags = 1;
         };
         ipv4.method = "auto";
