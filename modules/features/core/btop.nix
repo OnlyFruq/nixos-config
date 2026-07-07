@@ -4,7 +4,7 @@
     programs.btop = {
       enable = true;
       settings = {
-        update_ms = 100;
+        update_ms = 1000;
         theme_background = false;
       };
     };
