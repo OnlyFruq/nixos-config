@@ -52,7 +52,7 @@
 
       programs.ssh.settings."github.com" = {
         HostName = "github.com";
-        User = "git";
+        #User = "git";
         #IdentityFile = config.sops.secrets.frugzzz1_ssh_id_ed25519.path;
       };
 
