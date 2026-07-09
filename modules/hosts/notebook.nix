@@ -24,7 +24,7 @@
       };
 
       diskoCfg = {
-        device = "/dev/disk/by-id/nvme-SAMSUNG_MZALQ512HALU-000L2_S4UKNF0R457642";
+        device = "/dev/disk/by-id/nvme-PSEJN512GA87EC0_05Z3123002070_1";
         swapSize = "26G"; # RAM (24G) + 2G headroom for hibernation
         # encrypt defaults to true
       };
