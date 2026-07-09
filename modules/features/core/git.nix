@@ -19,7 +19,7 @@
         if [ -f "$tokenFile" ]; then
           token=$(cat "$tokenFile")
           mkdir -p "$HOME/.config/gh"
-          printf 'github.com:\n    oauth_token: %s\n    git_protocol: ssh\n    user: sean-imus\n' "$token" \
+          printf 'github.com:\n    oauth_token: %s\n    git_protocol: ssh\n    user: OnlyFruq\n' "$token" \
             | install -m 600 /dev/stdin "$HOME/.config/gh/hosts.yml"
         fi
       '';
@@ -53,7 +53,7 @@
       programs.ssh.settings."github.com" = {
         HostName = "github.com";
         User = "git";
-        IdentityFile = config.sops.secrets.sean_ssh_id_ed25519.path;
+        IdentityFile = config.sops.secrets.frugzzz1_ssh_id_ed25519.path;
       };
 
       # Pin GitHub's host key so first-connect never prompts (non-interactive).
