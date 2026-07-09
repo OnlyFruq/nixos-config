@@ -17,7 +17,7 @@
 
         users.users.frugzzz1 = {
           isNormalUser = true;
-          description = "frugzzz1";
+          description = "Frugzzz1";
           linger = true; # keep user services (e.g. tailscale userspace) alive without a login session
           hashedPasswordFile = config.sops.secrets.frugzzz1_hashed_password.path;
           shell = pkgs.zsh;
