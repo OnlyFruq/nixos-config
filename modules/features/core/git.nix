@@ -53,7 +53,7 @@
       programs.ssh.settings."github.com" = {
         HostName = "github.com";
         User = "git";
-        IdentityFile = config.sops.secrets.frugzzz1_ssh_id_ed25519.path;
+        #IdentityFile = config.sops.secrets.frugzzz1_ssh_id_ed25519.path;
       };
 
       # Pin GitHub's host key so first-connect never prompts (non-interactive).
