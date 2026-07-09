@@ -17,7 +17,7 @@
 
         users.users.frugzzz1 = {
           isNormalUser = true;
-          description = "Frugzzz1";
+          description = "frugzzz1";
           linger = true; # keep user services (e.g. tailscale userspace) alive without a login session
           hashedPasswordFile = config.sops.secrets.frugzzz1_hashed_password.path;
           shell = pkgs.zsh;
@@ -40,7 +40,7 @@
     { config, ... }:
     {
       home.stateVersion = "25.11";
-      home.username = "Frugzzz1";
+      home.username = "frugzzz1";
       home.homeDirectory = "/home/${config.home.username}";
 
       programs.git.settings.user = {
