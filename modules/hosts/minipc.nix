@@ -17,7 +17,7 @@
       networking.hostName = "minipc";
 
       diskoCfg = {
-        device = "/dev/disk/by-id/CHANGE-ME"; # TODO: echtes Device nach lsblk/by-id eintragen
+        device = "/dev/disk/by-id/nvme-PSEJN512GA87EC0_05Z3123002070";
         swapSize = "10G";
         encrypt = false; # kein LUKS-Prompt beim Boot, wie in der VM
       };
