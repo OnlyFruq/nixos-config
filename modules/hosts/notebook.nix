@@ -10,7 +10,7 @@
         persistence
         user-groups
         # user + machine capability
-        sean
+        frugzzz1
         desktop
         # notebook-only aspects (meaningless in a VM)
         qemu
@@ -79,7 +79,7 @@
         HibernateDelaySec = 3600;
       };
 
-      home-manager.users.sean.programs.niri.settings.outputs = {
+      home-manager.users.frugzzz1.programs.niri.settings.outputs = {
         "eDP-1" = {
           position = {
             x = 0;
