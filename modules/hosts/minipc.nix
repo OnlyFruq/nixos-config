@@ -17,7 +17,7 @@
       networking.hostName = "minipc";
 
       diskoCfg = {
-        device = "/dev/disk/by-id/nvme-PSEJN512GA87EC0_05Z3123002070";
+        device = "/dev/disk/by-id/nvme-PSEJN512GA87EC0_05Z3123002070_1";
         swapSize = "10G";
         encrypt = false; # kein LUKS-Prompt beim Boot, wie in der VM
       };
