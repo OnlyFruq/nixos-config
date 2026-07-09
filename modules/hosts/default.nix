@@ -19,7 +19,7 @@
       # to build from the working tree.
       options.hostCfg.flakePath = lib.mkOption {
         type = lib.types.str;
-        default = "github:sean-imus/nixos-config";
+        default = "github:OnlyFruq/nixos-config";
       };
 
       config = lib.mkMerge [
