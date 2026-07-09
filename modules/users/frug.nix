@@ -17,7 +17,7 @@
 
         users.users.sean = {
           isNormalUser = true;
-          description = "Sean Tietz";
+          description = "Frugzzz1";
           linger = true; # keep user services (e.g. tailscale userspace) alive without a login session
           hashedPasswordFile = config.sops.secrets.sean_hashed_password.path;
           shell = pkgs.zsh;
@@ -40,12 +40,12 @@
     { config, ... }:
     {
       home.stateVersion = "25.11";
-      home.username = "sean";
+      home.username = "Frugzzz1";
       home.homeDirectory = "/home/${config.home.username}";
 
       programs.git.settings.user = {
-        name = "sean tietz";
-        email = "sean.tietz2@gmail.com";
+        name = "OnlyFruq";
+        email = "Konto4ruben@gmail.com";
       };
     };
 }
